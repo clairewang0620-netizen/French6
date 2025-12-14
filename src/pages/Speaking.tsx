@@ -1,50 +1,59 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { SPEAKING_DATA } from '../data/speaking';
 import { AudioButton } from '../components/AudioButton';
+import { clsx } from 'clsx';
 
 export const Speaking: React.FC = () => {
-  const [filter, setFilter] = useState('All');
-  
-  // Use useMemo for performance with large lists (600 items)
-  const categories = useMemo(() => ['All', ...Array.from(new Set(SPEAKING_DATA.map(s => s.category)))], []);
-  
-  const filteredData = useMemo(() => 
-    filter === 'All' ? SPEAKING_DATA : SPEAKING_DATA.filter(s => s.category === filter),
-    [filter]
-  );
+  const [activeCategory, setActiveCategory] = useState('All');
+  const categories = ['All', '打招呼', '出行', '购物', '点餐', '工作'];
+
+  const filtered = activeCategory === 'All' 
+    ? SPEAKING_DATA 
+    : SPEAKING_DATA.filter(s => s.category === activeCategory);
 
   return (
-    <div className="p-4 flex flex-col h-full max-w-2xl mx-auto">
-      <div className="mb-6 sticky top-0 bg-gray-50 pt-2 pb-4 z-10">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">常用口语 ({SPEAKING_DATA.length}句)</h2>
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-4 py-2 text-sm rounded-full whitespace-nowrap transition-all border ${
-                filter === cat 
-                  ? 'bg-secondary text-white border-secondary shadow-md' 
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+    <div className="max-w-3xl mx-auto">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold text-[#1A202C] mb-2">日常口语</h1>
+        <p className="text-gray-500">100 句高频生活表达，点击红色按钮跟读</p>
       </div>
 
-      <div className="grid gap-3 pb-4">
-        {filteredData.map(phrase => (
-          <div key={phrase.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between group hover:border-primary/30 transition-all hover:shadow-md">
-            <div className="pr-4">
-              <p className="font-medium text-lg text-slate-800 mb-1">{phrase.fr}</p>
-              <p className="text-gray-500 text-sm">{phrase.cn}</p>
+      {/* Categories */}
+      <div className="flex justify-center flex-wrap gap-2 mb-8">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={clsx(
+              "px-4 py-2 rounded-full text-sm font-medium transition-all",
+              activeCategory === cat
+                ? "bg-[#0055A4] text-white shadow-md"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0055A4]"
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Vertical Cards */}
+      <div className="space-y-4">
+        {filtered.map((item) => (
+          <div key={item.id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all flex items-center justify-between group">
+            <div>
+              <div className="text-xs text-[#0055A4] font-bold mb-1 opacity-60">{item.category}</div>
+              <h3 className="text-xl font-medium text-gray-800 mb-1">{item.fr}</h3>
+              <p className="text-gray-500 font-light">{item.cn}</p>
             </div>
-            <AudioButton text={phrase.fr} className="bg-blue-50 text-blue-600 group-hover:bg-primary group-hover:text-white shrink-0" size={20} />
+            <div className="pl-4">
+              <AudioButton 
+                text={item.fr} 
+                className="bg-red-50 text-[#EF4135] p-3 rounded-full hover:bg-[#EF4135] hover:text-white transition-colors"
+                size={22}
+              />
+            </div>
           </div>
         ))}
-        {filteredData.length === 0 && <div className="text-center text-gray-400 py-10">暂无内容</div>}
       </div>
     </div>
   );

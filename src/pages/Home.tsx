@@ -1,89 +1,60 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, PenTool, MessageCircle, Book, Brain, AlertCircle, ArrowRight, Star } from 'lucide-react';
+import { BookOpen, Mic, Book, ArrowRight } from 'lucide-react';
 
-const ModuleCard = ({ title, desc, icon: Icon, color, to }: { title: string, desc: string, icon: any, color: string, to: string }) => (
-  <Link to={to} className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-blue-100 transition-all duration-300">
-    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${color} bg-opacity-10`}>
-      <Icon className={color.replace('bg-', 'text-')} size={24} />
+const FeatureCard = ({ title, sub, icon: Icon, to, color }: any) => (
+  <Link to={to} className="group bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center">
+    <div className={`p-4 rounded-2xl mb-6 ${color} bg-opacity-10 text-${color.split('-')[1]}-600`}>
+      <Icon size={32} className={color.replace('bg-', 'text-')} />
     </div>
-    <div className="flex justify-between items-start">
-      <div>
-        <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-primary transition-colors">{title}</h3>
-        <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
-      </div>
-      <ArrowRight className="text-gray-300 group-hover:text-primary transform group-hover:translate-x-1 transition-all" size={20} />
+    <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+    <p className="text-gray-500 text-sm mb-6">{sub}</p>
+    <div className="mt-auto flex items-center text-[#0055A4] font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+      开始学习 <ArrowRight size={16} className="ml-1" />
     </div>
   </Link>
 );
 
 export const Home: React.FC = () => {
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
-      {/* Hero Section */}
-      <div className="bg-primary rounded-3xl p-8 text-white shadow-xl shadow-blue-200 relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-medium mb-4 backdrop-blur-sm border border-white/20">
-            <Star size={12} fill="currentColor" />
-            <span>为中国学习者定制</span>
-          </div>
-          <h1 className="text-3xl font-extrabold mb-2 tracking-tight">Bonjour, 学习者!</h1>
-          <p className="text-blue-100 max-w-md text-sm leading-relaxed">
-            欢迎来到 French Master。从基础发音到流利阅读，开启你的法语进阶之旅。
-          </p>
-        </div>
-        <div className="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-4xl mx-auto space-y-16">
+      
+      <div className="text-center space-y-4 animate-fade-in">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#1A202C]">
+          <span className="text-[#0055A4]">French</span> Master
+        </h1>
+        <p className="text-xl text-gray-500 max-w-lg mx-auto font-light">
+          极简主义法语学习工具。专注单词、口语与阅读。
+        </p>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ModuleCard 
-          title="单词积累" 
-          desc="A1-C1 分级词汇，60词/级，Flashcard 强化记忆" 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-4">
+        <FeatureCard 
+          title="核心单词" 
+          sub="A1 - C1 分级词汇卡片" 
           icon={BookOpen} 
-          color="bg-blue-500" 
           to="/vocab" 
+          color="bg-blue-500"
         />
-        <ModuleCard 
-          title="基础语法" 
-          desc="核心时态与规则，搭配原声例句解析" 
-          icon={PenTool} 
-          color="bg-emerald-500" 
-          to="/grammar" 
-        />
-        <ModuleCard 
-          title="常用口语" 
-          desc="600句高频生活表达，点击即播" 
-          icon={MessageCircle} 
-          color="bg-purple-500" 
+        <FeatureCard 
+          title="日常口语" 
+          sub="100 句高频生活表达" 
+          icon={Mic} 
           to="/speaking" 
+          color="bg-red-500"
         />
-        <ModuleCard 
-          title="阅读训练" 
-          desc="20篇精选短文，支持整段朗读与中法对照" 
+        <FeatureCard 
+          title="精选阅读" 
+          sub="5 篇短文沉浸阅读" 
           icon={Book} 
-          color="bg-amber-500" 
           to="/reading" 
-        />
-        <ModuleCard 
-          title="阶段测试" 
-          desc="自测水平，实时反馈，精准查漏补缺" 
-          icon={Brain} 
-          color="bg-rose-500" 
-          to="/quiz" 
-        />
-        <ModuleCard 
-          title="错题本" 
-          desc="自动记录错题，重复练习直到掌握" 
-          icon={AlertCircle} 
-          color="bg-slate-600" 
-          to="/mistakes" 
+          color="bg-emerald-500"
         />
       </div>
       
-      <footer className="text-center text-gray-400 text-xs py-8">
-        © 2024 French Master. Designed for Learners.
-      </footer>
+      <div className="text-xs text-gray-300 font-mono">
+        v1.0.0 · Static Build
+      </div>
     </div>
   );
 };

@@ -8,12 +8,14 @@ export enum Level {
 
 export interface Word {
   id: string;
-  term: string;
+  french: string;
+  chinese: string;
   ipa: string;
-  definition: string;
   level: Level;
-  exampleFr: string;
-  exampleCn: string;
+  example: {
+    french: string;
+    chinese: string;
+  };
 }
 
 export interface GrammarExample {

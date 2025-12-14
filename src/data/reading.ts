@@ -2,25 +2,38 @@ import { Article } from '../types';
 
 export const READING_DATA: Article[] = [
   {
-    id: 'r_1',
-    title: 'La Tour Eiffel',
-    content: "La Tour Eiffel est le symbole de Paris. Elle a été construite par Gustave Eiffel pour l'Exposition universelle de 1889. Elle mesure 330 mètres de hauteur. Aujourd'hui, c'est l'un des monuments les plus visités au monde.",
-    translation: "埃菲尔铁塔是巴黎的象征。它是由古斯塔夫·埃菲尔为1889年世界博览会建造的。它高330米。如今，它是世界上参观人数最多的古迹之一。",
-    keywords: ['Symbole', 'Construite', 'Hauteur', 'Monuments']
+    id: 'r1',
+    title: 'La Vie à Paris',
+    content: "Paris est une ville magnifique. Le matin, les Parisiens aiment prendre un café et un croissant dans une boulangerie. Les rues sont toujours animées. On peut voir la Tour Eiffel de loin. C'est le symbole de la France. Le métro est très pratique pour se déplacer. Il y a beaucoup de musées comme le Louvre. La mode est aussi très importante ici. Vivre à Paris est une expérience unique.",
+    translation: "巴黎是一座宏伟的城市。早晨，巴黎人喜欢在面包店喝咖啡吃羊角面包。街道总是很热闹。人们可以从远处看到埃菲尔铁塔。它是法国的象征。地铁出行非常方便。这里有很多像卢浮宫这样的博物馆。时尚在这里也很重要。在巴黎生活是一种独特的体验。",
+    keywords: ['Paris', 'Café', 'Musée']
   },
   {
-    id: 'r_2',
-    title: 'La Cuisine Française',
-    content: "La cuisine française est célèbre dans le monde entier. Les Français aiment manger du pain, du fromage et boire du vin. Le repas est un moment important pour la famille et les amis. On prend souvent le temps de bien manger.",
-    translation: "法国菜闻名世界。法国人喜欢吃面包、奶酪和喝葡萄酒。用餐是家人和朋友相聚的重要时刻。人们经常花时间好好吃饭。",
-    keywords: ['Célèbre', 'Pain', 'Fromage', 'Repas']
+    id: 'r2',
+    title: 'Les Vacances en France',
+    content: "En été, beaucoup de Français partent en vacances. Ils vont souvent à la mer dans le sud de la France. La Côte d'Azur est très populaire. D'autres préfèrent la montagne pour faire de la randonnée. C'est un moment pour se reposer et passer du temps en famille. On mange bien, on dort tard et on profite du soleil. Les vacances sont sacrées pour les Français.",
+    translation: "夏天，许多法国人去度假。他们经常去法国南部的海边。蔚蓝海岸非常受欢迎。其他人更喜欢去山里徒步旅行。这是一个休息和与家人共度时光的时刻。人们吃得好，睡得晚，享受阳光。假期对法国人来说是神圣的。",
+    keywords: ['Vacances', 'Mer', 'Soleil']
   },
-  // Logic to fill up to 20 articles
-  ...Array.from({ length: 18 }, (_, i) => ({
-    id: `r_${i + 3}`,
-    title: `Lecture ${i + 3} : La Culture`,
-    content: `La France est un pays riche en histoire et en culture. Il y a beaucoup de musées, de châteaux et de beaux paysages à découvrir. Chaque région a ses propres traditions. Paris est la capitale, mais les autres villes sont aussi très belles.`,
-    translation: `这是第 ${i + 3} 篇阅读材料。法国是一个历史和文化丰富的国家。有许多博物馆、城堡和美丽的风景等待探索。每个地区都有自己的传统。巴黎是首都，但其他城市也非常美丽。`,
-    keywords: ['Culture', 'Histoire', 'Paysages', 'Traditions']
-  }))
+  {
+    id: 'r3',
+    title: 'La Cuisine Française',
+    content: "La gastronomie française est célèbre dans le monde entier. Chaque région a ses spécialités. Le fromage et le vin sont essentiels. Un repas traditionnel commence par une entrée, suivie d'un plat principal et d'un dessert. On prend le temps de manger. C'est un art de vivre. Les marchés locaux offrent des produits frais et délicieux.",
+    translation: "法国美食闻名世界。每个地区都有自己的特色菜。奶酪和葡萄酒必不可少。传统的用餐从前菜开始，接着是主菜和甜点。人们花时间吃饭。这是一种生活的艺术。当地市场提供新鲜美味的产品。",
+    keywords: ['Gastronomie', 'Fromage', 'Vin']
+  },
+  {
+    id: 'r4',
+    title: 'Le Travail',
+    content: "En France, on travaille généralement 35 heures par semaine. L'équilibre entre vie professionnelle et vie privée est important. Il y a cinq semaines de congés payés par an. Les réunions sont fréquentes. Le déjeuner est une pause importante dans la journée de travail. On discute souvent avec ses collègues.",
+    translation: "在法国，人们通常每周工作35小时。工作与生活的平衡很重要。每年有五周带薪休假。会议很频繁。午餐是工作日中重要的休息时间。人们经常与同事交谈。",
+    keywords: ['Travail', 'Équilibre', 'Pause']
+  },
+  {
+    id: 'r5',
+    title: 'Le Sport',
+    content: "Le football est le sport le plus populaire en France. L'équipe nationale est très soutenue. Le tennis et le rugby sont aussi aimés. Beaucoup de gens font du jogging ou du vélo le week-end. Le Tour de France est un événement majeur en juillet. Le sport aide à rester en bonne santé.",
+    translation: "足球是法国最受欢迎的运动。国家队深受支持。网球和橄榄球也很受喜爱。许多人周末慢跑或骑自行车。环法自行车赛是七月的主要活动。运动有助于保持健康。",
+    keywords: ['Sport', 'Football', 'Vélo']
+  }
 ];
