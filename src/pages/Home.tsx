@@ -130,7 +130,7 @@ export const Home: React.FC = () => {
 
       {/* Footer Info */}
       <footer className="mt-20 text-center text-gray-400 text-xs">
-        <p>© 2024 French Master. Designed for Learners.</p>
+        <p>© French Master. Designed for Learners.</p>
       </footer>
     </div>
   );
