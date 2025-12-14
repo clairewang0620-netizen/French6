@@ -34,7 +34,11 @@ export interface GrammarRule {
 
 export interface Phrase {
   id: string;
-  category: string;
+  french: string;
+  chinese: string;
+}
+
+export interface ArticleKeyword {
   fr: string;
   cn: string;
 }
@@ -44,7 +48,7 @@ export interface Article {
   title: string;
   content: string;
   translation: string;
-  keywords: string[];
+  keywords: ArticleKeyword[];
 }
 
 export interface QuizQuestion {
@@ -54,9 +58,4 @@ export interface QuizQuestion {
   options: string[];
   answer: number; // Index of correct option
   explanation: string;
-}
-
-export interface MistakeRecord {
-  questionId: string;
-  timestamp: number;
 }

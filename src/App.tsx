@@ -5,6 +5,8 @@ import { Home } from './pages/Home';
 import { Vocab } from './pages/Vocab';
 import { Speaking } from './pages/Speaking';
 import { Reading } from './pages/Reading';
+import { Grammar } from './pages/Grammar';
+import { Quiz } from './pages/Quiz';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="vocab" element={<Vocab />} />
           <Route path="speaking" element={<Speaking />} />
           <Route path="reading" element={<Reading />} />
+          <Route path="grammar" element={<Grammar />} />
+          <Route path="quiz" element={<Quiz />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

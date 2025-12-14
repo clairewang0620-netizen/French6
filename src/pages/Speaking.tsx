@@ -1,55 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SPEAKING_DATA } from '../data/speaking';
 import { AudioButton } from '../components/AudioButton';
-import { clsx } from 'clsx';
 
 export const Speaking: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const categories = ['All', '打招呼', '出行', '购物', '点餐', '工作'];
-
-  const filtered = activeCategory === 'All' 
-    ? SPEAKING_DATA 
-    : SPEAKING_DATA.filter(s => s.category === activeCategory);
-
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-[#1A202C] mb-2">日常口语</h1>
-        <p className="text-gray-500">100 句高频生活表达，点击红色按钮跟读</p>
+    <div className="w-full max-w-3xl mx-auto pb-12">
+      <div className="text-center mb-10 space-y-2">
+        <h1 className="text-3xl font-bold text-[#1A202C]">常用口语 110 句</h1>
+        <p className="text-gray-500">高频生活表达 · 点击红色按钮跟读</p>
       </div>
 
-      {/* Categories */}
-      <div className="flex justify-center flex-wrap gap-2 mb-8">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={clsx(
-              "px-4 py-2 rounded-full text-sm font-medium transition-all",
-              activeCategory === cat
-                ? "bg-[#0055A4] text-white shadow-md"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0055A4]"
-            )}
+      <div className="grid gap-4">
+        {SPEAKING_DATA.map((phrase) => (
+          <div 
+            key={phrase.id} 
+            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between hover:border-blue-100 transition-colors group"
           >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Vertical Cards */}
-      <div className="space-y-4">
-        {filtered.map((item) => (
-          <div key={item.id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all flex items-center justify-between group">
-            <div>
-              <div className="text-xs text-[#0055A4] font-bold mb-1 opacity-60">{item.category}</div>
-              <h3 className="text-xl font-medium text-gray-800 mb-1">{item.fr}</h3>
-              <p className="text-gray-500 font-light">{item.cn}</p>
+            <div className="flex-1 pr-4">
+              <h3 className="text-xl font-semibold text-[#002654] mb-1">{phrase.french}</h3>
+              <p className="text-gray-500 text-sm">{phrase.chinese}</p>
             </div>
-            <div className="pl-4">
+            
+            <div className="shrink-0">
               <AudioButton 
-                text={item.fr} 
-                className="bg-red-50 text-[#EF4135] p-3 rounded-full hover:bg-[#EF4135] hover:text-white transition-colors"
-                size={22}
+                text={phrase.french} 
+                className="bg-[#CE1126] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:bg-red-700 hover:scale-105 active:scale-95 transition-all" 
+                size={20}
               />
             </div>
           </div>

@@ -1,25 +1,135 @@
 import { Phrase } from '../types';
 
-const categories = ['打招呼', '点餐', '购物', '出行', '工作'];
-const TARGET_TOTAL = 100;
-
 export const SPEAKING_DATA: Phrase[] = [
-  { id: 's01', category: '打招呼', fr: 'Bonjour, enchanté.', cn: '你好，很高兴认识你。' },
-  { id: 's02', category: '打招呼', fr: 'Comment allez-vous ?', cn: '您身体好吗？' },
-  { id: 's03', category: '点餐', fr: 'Je voudrais le menu, s\'il vous plaît.', cn: '请给我菜单。' },
-  { id: 's04', category: '点餐', fr: 'L\'addition, s\'il vous plaît.', cn: '请结账。' },
-  { id: 's05', category: '购物', fr: 'Combien ça coûte ?', cn: '这个多少钱？' },
-  { id: 's06', category: '出行', fr: 'Où est la station de métro ?', cn: '地铁站在哪里？' },
-  { id: 's07', category: '工作', fr: 'Je suis en réunion.', cn: '我在开会。' },
-];
+  { id: 'p1', french: "Bonjour, ça va ?", chinese: "你好，最近好吗？" },
+  { id: 'p2', french: "Je voudrais un café, s'il vous plaît.", chinese: "我想要一杯咖啡，谢谢。" },
+  { id: 'p3', french: "Où sont les toilettes ?", chinese: "洗手间在哪里？" },
+  { id: 'p4', french: "Combien ça coûte ?", chinese: "这个多少钱？" },
+  { id: 'p5', french: "Je ne comprends pas.", chinese: "我不明白。" },
+  { id: 'p6', french: "Pouvez-vous répéter ?", chinese: "您能重复一遍吗？" },
+  { id: 'p7', french: "Enchanté(e).", chinese: "很高兴认识你。" },
+  { id: 'p8', french: "À tout à l'heure.", chinese: "一会儿见。" },
+  { id: 'p9', french: "C'est délicieux !", chinese: "这很好吃！" },
+  { id: 'p10', french: "Excusez-moi.", chinese: "打扰了/抱歉。" },
 
-// Fill to 100
-for (let i = SPEAKING_DATA.length; i < TARGET_TOTAL; i++) {
-  const cat = categories[i % categories.length];
-  SPEAKING_DATA.push({
-    id: `gen_${i}`,
-    category: cat,
-    fr: `Phrase pratique numéro ${i + 1} pour la catégorie ${cat}.`,
-    cn: `这是【${cat}】场景下的第 ${i + 1} 句常用表达。`
-  });
-}
+  // --- 新增数据 (New 100) ---
+  // 基础表达
+  { id: 'p11', french: "Oui, s'il vous plaît.", chinese: "是的，谢谢。" },
+  { id: 'p12', french: "Non, merci.", chinese: "不用了，谢谢。" },
+  { id: 'p13', french: "De rien.", chinese: "不客气。" },
+  { id: 'p14', french: "Je ne sais pas.", chinese: "我不知道。" },
+  { id: 'p15', french: "D'accord.", chinese: "好的 / 同意。" },
+  { id: 'p16', french: "Bien sûr.", chinese: "当然。" },
+  { id: 'p17', french: "C'est vrai ?", chinese: "是真的吗？" },
+  { id: 'p18', french: "Ce n'est pas grave.", chinese: "没关系 / 严重。" },
+  { id: 'p19', french: "Je suis désolé(e).", chinese: "我很抱歉。" },
+  { id: 'p20', french: "Pardon.", chinese: "请原谅 / 抱歉。" },
+
+  // 介绍与交流
+  { id: 'p21', french: "Comment vous appelez-vous ?", chinese: "您叫什么名字？" },
+  { id: 'p22', french: "Je m'appelle David.", chinese: "我叫大卫。" },
+  { id: 'p23', french: "Je suis chinois(e).", chinese: "我是中国人。" },
+  { id: 'p24', french: "D'où venez-vous ?", chinese: "您来自哪里？" },
+  { id: 'p25', french: "Je viens de Pékin.", chinese: "我来自北京。" },
+  { id: 'p26', french: "Parlez-vous anglais ?", chinese: "您说英语吗？" },
+  { id: 'p27', french: "Je parle un peu français.", chinese: "我会说一点法语。" },
+  { id: 'p28', french: "Parlez plus lentement, s'il vous plaît.", chinese: "请说慢一点。" },
+  { id: 'p29', french: "Comment dit-on ça en français ?", chinese: "这个用法语怎么说？" },
+  { id: 'p30', french: "Je comprends.", chinese: "我明白了。" },
+
+  // 出行与方向
+  { id: 'p31', french: "Je cherche la gare.", chinese: "我在找火车站。" },
+  { id: 'p32', french: "Où est le métro ?", chinese: "地铁在哪里？" },
+  { id: 'p33', french: "C'est loin d'ici ?", chinese: "离这儿远吗？" },
+  { id: 'p34', french: "C'est près d'ici.", chinese: "离这儿很近。" },
+  { id: 'p35', french: "Allez tout droit.", chinese: "直走。" },
+  { id: 'p36', french: "Tournez à gauche.", chinese: "左转。" },
+  { id: 'p37', french: "Tournez à droite.", chinese: "右转。" },
+  { id: 'p38', french: "Arrêtez-vous ici.", chinese: "请停在这里。" },
+  { id: 'p39', french: "Un billet pour Paris, s'il vous plaît.", chinese: "请给我一张去巴黎的票。" },
+  { id: 'p40', french: "À quelle heure part le bus ?", chinese: "巴士几点出发？" },
+
+  // 住宿与酒店
+  { id: 'p41', french: "J'ai une réservation.", chinese: "我有预订。" },
+  { id: 'p42', french: "Avez-vous une chambre libre ?", chinese: "还有空房吗？" },
+  { id: 'p43', french: "Je voudrais une chambre double.", chinese: "我想要一间双人房。" },
+  { id: 'p44', french: "Le petit-déjeuner est inclus ?", chinese: "包含早餐吗？" },
+  { id: 'p45', french: "Quel est le mot de passe du Wifi ?", chinese: "Wifi密码是多少？" },
+  { id: 'p46', french: "Ma clé, s'il vous plaît.", chinese: "请给我钥匙。" },
+  { id: 'p47', french: "La climatisation ne marche pas.", chinese: "空调坏了。" },
+  { id: 'p48', french: "Je peux laisser mes bagages ?", chinese: "我可以寄存行李吗？" },
+  { id: 'p49', french: "À quelle heure est le check-out ?", chinese: "几点退房？" },
+  { id: 'p50', french: "Pouvez-vous appeler un taxi ?", chinese: "能帮我叫辆出租车吗？" },
+
+  // 餐厅与点餐
+  { id: 'p51', french: "Une table pour deux, s'il vous plaît.", chinese: "请给我一张两人的桌子。" },
+  { id: 'p52', french: "La carte, s'il vous plaît.", chinese: "请给我菜单。" },
+  { id: 'p53', french: "Avez-vous un menu en anglais ?", chinese: "有英文菜单吗？" },
+  { id: 'p54', french: "Je vais prendre le menu.", chinese: "我要点套餐。" },
+  { id: 'p55', french: "De l'eau, s'il vous plaît.", chinese: "请给我一点水。" },
+  { id: 'p56', french: "Sans sucre.", chinese: "不要糖。" },
+  { id: 'p57', french: "Je suis végétarien.", chinese: "我是素食者。" },
+  { id: 'p58', french: "L'addition, s'il vous plaît.", chinese: "请结账。" },
+  { id: 'p59', french: "Acceptez-vous la carte ?", chinese: "可以刷卡吗？" },
+  { id: 'p60', french: "Gardez la monnaie.", chinese: "不用找零了。" },
+
+  // 购物
+  { id: 'p61', french: "Je regarde juste, merci.", chinese: "我只是看看，谢谢。" },
+  { id: 'p62', french: "C'est trop cher.", chinese: "太贵了。" },
+  { id: 'p63', french: "Vous avez une taille plus grande ?", chinese: "有大一点的尺码吗？" },
+  { id: 'p64', french: "Je peux essayer ?", chinese: "我可以试穿吗？" },
+  { id: 'p65', french: "Où sont les cabines d'essayage ?", chinese: "试衣间在哪里？" },
+  { id: 'p66', french: "Je le prends.", chinese: "我要买这个。" },
+  { id: 'p67', french: "Avez-vous des soldes ?", chinese: "有打折吗？" },
+  { id: 'p68', french: "C'est ouvert le dimanche ?", chinese: "周日开门吗？" },
+  { id: 'p69', french: "Je voudrais un sac.", chinese: "我想要个袋子。" },
+  { id: 'p70', french: "Remboursement, s'il vous plaît.", chinese: "请退款。" },
+
+  // 时间与日期
+  { id: 'p71', french: "Quelle heure est-il ?", chinese: "几点了？" },
+  { id: 'p72', french: "Il est huit heures.", chinese: "现在是八点。" },
+  { id: 'p73', french: "Aujourd'hui, c'est lundi.", chinese: "今天是星期一。" },
+  { id: 'p74', french: "À demain matin.", chinese: "明天早上见。" },
+  { id: 'p75', french: "Je suis en retard.", chinese: "我迟到了。" },
+  { id: 'p76', french: "C'est tôt.", chinese: "还早。" },
+  { id: 'p77', french: "C'est tard.", chinese: "很晚了。" },
+  { id: 'p78', french: "Bon week-end !", chinese: "周末愉快！" },
+  { id: 'p79', french: "Joyeux anniversaire !", chinese: "生日快乐！" },
+  { id: 'p80', french: "Bonne année !", chinese: "新年快乐！" },
+
+  // 感受与状态
+  { id: 'p81', french: "J'ai faim.", chinese: "我饿了。" },
+  { id: 'p82', french: "J'ai soif.", chinese: "我渴了。" },
+  { id: 'p83', french: "Je suis fatigué(e).", chinese: "我累了。" },
+  { id: 'p84', french: "Je suis heureux.", chinese: "我很开心。" },
+  { id: 'p85', french: "Je suis triste.", chinese: "我很伤心。" },
+  { id: 'p86', french: "J'ai chaud.", chinese: "我很热。" },
+  { id: 'p87', french: "J'ai froid.", chinese: "我很冷。" },
+  { id: 'p88', french: "Ça m'énerve.", chinese: "这让我很烦。" },
+  { id: 'p89', french: "Je m'ennuie.", chinese: "我好无聊。" },
+  { id: 'p90', french: "C'est génial !", chinese: "太棒了！" },
+
+  // 紧急情况与求助
+  { id: 'p91', french: "Au secours !", chinese: "救命！" },
+  { id: 'p92', french: "Aidez-moi !", chinese: "帮帮我！" },
+  { id: 'p93', french: "J'ai perdu mon passeport.", chinese: "我丢了护照。" },
+  { id: 'p94', french: "J'ai perdu mon portefeuille.", chinese: "我丢了钱包。" },
+  { id: 'p95', french: "Je suis malade.", chinese: "我生病了。" },
+  { id: 'p96', french: "Appelez un médecin.", chinese: "请叫医生。" },
+  { id: 'p97', french: "Appelez la police.", chinese: "请报警。" },
+  { id: 'p98', french: "Où est la pharmacie ?", chinese: "药店在哪里？" },
+  { id: 'p99', french: "C'est une urgence.", chinese: "这是紧急情况。" },
+  { id: 'p100', french: "Je veux contacter l'ambassade.", chinese: "我想联系大使馆。" },
+
+  // 社交与告别
+  { id: 'p101', french: "Bonne chance !", chinese: "祝你好运！" },
+  { id: 'p102', french: "Amusez-vous bien.", chinese: "玩得开心。" },
+  { id: 'p103', french: "Bon voyage !", chinese: "旅途愉快！" },
+  { id: 'p104', french: "Prenez soin de vous.", chinese: "照顾好自己。" },
+  { id: 'p105', french: "À bientôt.", chinese: "回见。" },
+  { id: 'p106', french: "À la prochaine.", chinese: "下次见。" },
+  { id: 'p107', french: "Félicitations !", chinese: "恭喜！" },
+  { id: 'p108', french: "Santé !", chinese: "干杯！" },
+  { id: 'p109', french: "Tu me manques.", chinese: "我想你。" },
+  { id: 'p110', french: "Je t'aime.", chinese: "我爱你。" }
+];
