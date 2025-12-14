@@ -1,0 +1,5 @@
+{
+  "name": "French Master",
+  "description": "A comprehensive static web app for learning French, featuring vocabulary, grammar, speaking, and reading modules with native browser text-to-speech.",
+  "requestFramePermissions": []
+}

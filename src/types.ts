@@ -1,0 +1,60 @@
+export enum Level {
+  A1 = 'A1',
+  A2 = 'A2',
+  B1 = 'B1',
+  B2 = 'B2',
+  C1 = 'C1'
+}
+
+export interface Word {
+  id: string;
+  term: string;
+  ipa: string;
+  definition: string;
+  level: Level;
+  exampleFr: string;
+  exampleCn: string;
+}
+
+export interface GrammarExample {
+  fr: string;
+  cn: string;
+}
+
+export interface GrammarRule {
+  id: string;
+  level: Level;
+  topic: string;
+  description: string;
+  structure?: string;
+  examples: GrammarExample[];
+}
+
+export interface Phrase {
+  id: string;
+  category: string;
+  fr: string;
+  cn: string;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
+  translation: string;
+  keywords: string[];
+}
+
+export interface QuizQuestion {
+  id: string;
+  level: Level;
+  question: string;
+  options: string[];
+  answer: number; // Index of correct option
+  explanation: string;
+}
+
+export interface MistakeRecord {
+  questionId: string;
+  timestamp: number;
+}
