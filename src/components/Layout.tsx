@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { BookOpen, Mic, Book, PenTool, Brain } from 'lucide-react';
+import { BookOpen, Mic, Book, PenTool, Brain, Search } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const NavItem = ({ to, label, icon: Icon }: { to: string, label: string, icon: any }) => (
@@ -35,6 +35,7 @@ export const Layout: React.FC = () => {
             <NavItem to="/grammar" label="语法" icon={PenTool} />
             <NavItem to="/reading" label="阅读" icon={Book} />
             <NavItem to="/quiz" label="测试" icon={Brain} />
+            <NavItem to="/ai-search" label="查词" icon={Search} />
           </div>
         </div>
       </nav>

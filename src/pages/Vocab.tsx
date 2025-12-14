@@ -1,121 +1,158 @@
-import React, { useState, useMemo } from 'react';
-import { Level } from '../types';
+import React, { useState } from 'react';
+import { Level, Word } from '../types';
 import { VOCAB_DATA } from '../data/vocab';
 import { AudioButton } from '../components/AudioButton';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Book } from 'lucide-react';
 import { clsx } from 'clsx';
 
+type ViewState = 'list' | 'flashcard';
+
 export const Vocab: React.FC = () => {
-  const [currentLevel, setCurrentLevel] = useState<Level>(Level.A1);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Default View is List
+  const [view, setView] = useState<ViewState>('list');
+  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [filterLevel, setFilterLevel] = useState<Level | 'ALL'>('ALL');
 
-  // Filter data strictly by level
-  const words = useMemo(() => VOCAB_DATA.filter(w => w.level === currentLevel), [currentLevel]);
-  
-  // Safety check
-  const currentWord = words[currentIndex] || words[0];
+  // Filter words
+  const displayWords = filterLevel === 'ALL' 
+    ? VOCAB_DATA 
+    : VOCAB_DATA.filter(w => w.level === filterLevel);
 
-  const handleLevelChange = (lvl: Level) => {
-    setCurrentLevel(lvl);
-    setCurrentIndex(0);
+  const handleWordClick = (word: Word) => {
+    setSelectedWord(word);
+    setView('flashcard');
+    window.scrollTo(0, 0);
   };
 
-  const nextWord = () => {
-    setCurrentIndex((prev) => (prev + 1) % words.length);
+  const handleBack = () => {
+    setView('list');
+    setSelectedWord(null);
   };
-
-  const prevWord = () => {
-    setCurrentIndex((prev) => (prev - 1 + words.length) % words.length);
-  };
-
-  if (!currentWord) return <div>No data available</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-2xl mx-auto">
-      {/* Level Selector - Minimalist Tabs */}
-      <div className="flex gap-2 mb-10 bg-white p-1.5 rounded-full shadow-sm border border-gray-100 overflow-x-auto max-w-full">
-        {Object.values(Level).map(lvl => (
-          <button
-            key={lvl}
-            onClick={() => handleLevelChange(lvl)}
-            className={clsx(
-              "px-6 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
-              currentLevel === lvl 
-                ? 'bg-[#0055A4] text-white shadow-md' 
-                : 'text-gray-500 hover:bg-gray-50'
-            )}
-          >
-            {lvl}
-          </button>
-        ))}
-      </div>
-
-      {/* The Immersive Card */}
-      <div className="w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-12 relative overflow-hidden flex flex-col items-center text-center min-h-[450px] justify-between transition-all duration-300">
-        {/* Progress Indicator */}
-        <div className="absolute top-6 right-6 text-xs font-mono text-gray-400">
-          {currentIndex + 1} / {words.length}
-        </div>
-        
-        {/* Decorative background element */}
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-
-        {/* Content */}
-        <div className="z-10 flex flex-col items-center w-full mt-4">
-          <h2 className="text-5xl md:text-6xl font-bold text-[#1A202C] mb-4 tracking-tight">
-            {currentWord.french}
-          </h2>
-          
-          <div className="bg-gray-50 px-4 py-1 rounded-full text-gray-500 font-mono text-sm mb-8 border border-gray-100">
-            {currentWord.ipa}
+    <div className="page-container max-w-4xl mx-auto">
+      {/* ------------------- LIST VIEW ------------------- */}
+      {view === 'list' && (
+        <div className="animate-fade-in space-y-8">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-[#002654]">核心单词表</h1>
+            <p className="text-gray-500">点击单词进入卡片学习</p>
           </div>
 
-          <div className="w-full h-px bg-gray-100 mb-8 max-w-[200px]"></div>
+          {/* Filter */}
+          <div className="flex flex-wrap justify-center gap-2">
+            <button 
+              onClick={() => setFilterLevel('ALL')}
+              className={clsx(
+                "px-4 py-1.5 rounded-full text-sm font-bold border transition-colors",
+                filterLevel === 'ALL' ? "bg-[#002654] text-white border-[#002654]" : "bg-white text-gray-500 border-gray-200 hover:border-[#002654]"
+              )}
+            >
+              全部
+            </button>
+            {Object.values(Level).map(lvl => (
+              <button 
+                key={lvl}
+                onClick={() => setFilterLevel(lvl)}
+                className={clsx(
+                  "px-4 py-1.5 rounded-full text-sm font-bold border transition-colors",
+                  filterLevel === lvl ? "bg-[#002654] text-white border-[#002654]" : "bg-white text-gray-500 border-gray-200 hover:border-[#002654]"
+                )}
+              >
+                {lvl}
+              </button>
+            ))}
+          </div>
 
-          <p className="text-2xl text-[#0055A4] font-medium mb-8">
-            {currentWord.chinese}
-          </p>
+          {/* Word List */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            {displayWords.map((word, index) => (
+              <div 
+                key={word.id}
+                onClick={() => handleWordClick(word)}
+                className={clsx(
+                  "p-5 flex items-center justify-between cursor-pointer hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0 group",
+                )}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-400 group-hover:bg-[#002654] group-hover:text-white transition-colors">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-[#1A202C]">{word.french}</h3>
+                    <p className="text-sm text-gray-500">{word.chinese}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={clsx(
+                    "text-xs font-bold px-2 py-1 rounded",
+                    word.level === Level.A1 && "bg-green-100 text-green-700",
+                    word.level === Level.A2 && "bg-blue-100 text-blue-700",
+                    word.level === Level.B1 && "bg-yellow-100 text-yellow-700",
+                    word.level === Level.B2 && "bg-orange-100 text-orange-700",
+                    word.level === Level.C1 && "bg-red-100 text-red-700",
+                  )}>
+                    {word.level}
+                  </span>
+                  <Book size={16} className="text-gray-300 group-hover:text-[#002654]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-          <div className="bg-[#F7F9FC] p-6 rounded-2xl w-full text-left border border-gray-100 relative group">
-            <p className="text-lg text-gray-800 font-medium mb-2">{currentWord.example.french}</p>
-            <p className="text-sm text-gray-500">{currentWord.example.chinese}</p>
+      {/* ------------------- FLASHCARD VIEW ------------------- */}
+      {view === 'flashcard' && selectedWord && (
+        <div className="animate-slide-up flex flex-col items-center min-h-[60vh] justify-center">
+          <button 
+            onClick={handleBack}
+            className="self-start mb-8 flex items-center gap-2 text-gray-500 hover:text-[#002654] font-medium transition-colors"
+          >
+            <ArrowLeft size={20} /> 返回列表
+          </button>
+
+          <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-12 text-center relative overflow-hidden">
+            {/* Background Decoration */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-[#002654]"></div>
             
-            <div className="absolute top-4 right-4">
-               <AudioButton 
-                 text={currentWord.example.french} 
-                 size={20} 
-                 className="text-[#EF4135] bg-white shadow-sm p-2 hover:bg-red-50"
-               />
+            <span className="absolute top-6 right-6 text-xs font-black text-gray-200 text-4xl select-none">
+              {selectedWord.level}
+            </span>
+
+            {/* Word Section */}
+            <div className="mb-10">
+              <h2 className="text-5xl md:text-6xl font-black text-[#002654] mb-3 tracking-tight">
+                {selectedWord.french}
+              </h2>
+              <div className="inline-flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                <span className="font-mono text-gray-500">{selectedWord.ipa}</span>
+                <AudioButton text={selectedWord.french} className="text-[#CE1126]" />
+              </div>
+            </div>
+
+            <div className="w-16 h-1 bg-gray-100 mx-auto mb-10 rounded-full"></div>
+
+            {/* Meaning Section */}
+            <h3 className="text-2xl font-bold text-gray-800 mb-10">
+              {selectedWord.chinese}
+            </h3>
+
+            {/* Example Section */}
+            <div className="bg-[#F7F9FC] p-6 rounded-2xl border border-gray-200 text-left relative">
+              <div className="absolute top-4 right-4">
+                 <AudioButton text={selectedWord.example.french} className="text-[#002654]" size={18} />
+              </div>
+              <p className="text-lg text-[#002654] font-medium mb-2 pr-8 leading-relaxed">
+                {selectedWord.example.french}
+              </p>
+              <p className="text-sm text-gray-500">
+                {selectedWord.example.chinese}
+              </p>
             </div>
           </div>
         </div>
-
-        {/* Main Audio Action */}
-        <div className="mt-8 z-10">
-          <AudioButton 
-            text={currentWord.french} 
-            size={32} 
-            className="bg-[#EF4135] text-white p-5 rounded-full shadow-lg hover:bg-red-600 hover:scale-105 transition-all"
-          />
-        </div>
-      </div>
-
-      {/* Navigation Controls */}
-      <div className="flex items-center gap-6 mt-8">
-        <button 
-          onClick={prevWord}
-          className="p-4 rounded-full text-gray-400 hover:bg-white hover:text-[#0055A4] hover:shadow-md transition-all"
-        >
-          <ChevronLeft size={28} />
-        </button>
-        <div className="text-sm font-medium text-gray-400">切换单词</div>
-        <button 
-          onClick={nextWord}
-          className="p-4 rounded-full text-gray-400 hover:bg-white hover:text-[#0055A4] hover:shadow-md transition-all"
-        >
-          <ChevronRight size={28} />
-        </button>
-      </div>
+      )}
     </div>
   );
 };
