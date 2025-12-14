@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-console.log("BUILD_TIMESTAMP:", Date.now(), "force-rebuild-v2");
+console.log("FORCE_REBUILD_TIMESTAMP", Date.now());
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

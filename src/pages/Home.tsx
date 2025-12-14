@@ -17,7 +17,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ title, sub, icon: Icon, to, the
     red:    { bar: 'bg-red-600',    iconBg: 'bg-red-50',    iconText: 'text-red-600',    hoverBorder: 'hover:border-red-300' },
     green:  { bar: 'bg-emerald-600', iconBg: 'bg-emerald-50', iconText: 'text-emerald-600', hoverBorder: 'hover:border-emerald-300' },
     purple: { bar: 'bg-violet-600', iconBg: 'bg-violet-50', iconText: 'text-violet-600', hoverBorder: 'hover:border-violet-300' },
-    orange: { bar: 'bg-amber-500',  iconBg: 'bg-amber-50',  iconText: 'text-amber-600',  hoverBorder: 'hover:border-amber-300' },
+    orange: { bar: 'bg-amber-50',  iconBg: 'bg-amber-50',  iconText: 'text-amber-600',  hoverBorder: 'hover:border-amber-300' },
   };
 
   const s = themeStyles[theme];
