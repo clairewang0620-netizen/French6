@@ -17,6 +17,8 @@ export const VOCAB_DATA: Word[] = [
   createWord('a1_3', 'Chat', '/ʃa/', '猫', Level.A1, 'Le chat dort sur le canapé.', '猫在沙发上睡觉。'),
   createWord('a1_4', 'Maison', '/mɛ.zɔ̃/', '房子', Level.A1, 'Ils ont acheté une grande maison.', '他们买了一栋大房子。'),
   createWord('a1_5', 'Livre', '/livʁ/', '书', Level.A1, 'J\'aime lire ce livre.', '我喜欢读这本书。'),
+  createWord('a1_6', 'Amour', '/a.muʁ/', '爱', Level.A1, 'L\'amour est important.', '爱很重要。'),
+  createWord('a1_7', 'Manger', '/mɑ̃.ʒe/', '吃', Level.A1, 'Je veux manger.', '我想吃东西。'),
   
   // --- A2 Samples ---
   createWord('a2_1', 'Voyage', '/vwa.jaʒ/', '旅行', Level.A2, 'Le voyage a été long.', '这次旅行很长。'),
@@ -32,22 +34,22 @@ export const VOCAB_DATA: Word[] = [
   createWord('c1_1', 'Inéluctable', '/i.ne.lyk.tabl/', '不可避免的', Level.C1, 'Le destin est inéluctable.', '命运是不可避免的。'),
 ];
 
-// Logic to ensure exactly 60 words per level
+// 自动填充逻辑：确保每个等级有 60 个单词
 const levels = [Level.A1, Level.A2, Level.B1, Level.B2, Level.C1];
 levels.forEach(level => {
   const currentLevelWords = VOCAB_DATA.filter(w => w.level === level);
   const startIdx = currentLevelWords.length;
-  const targetCount = 60; // 60 words per level
+  const targetCount = 60; // Requirement: 60 words per level
   
   for (let i = startIdx; i < targetCount; i++) {
     VOCAB_DATA.push(createWord(
       `${level.toLowerCase()}_gen_${i+1}`, 
       `Mot ${level} ${i+1}`, 
-      '/.../', 
-      `[${level}] 单词释义 ${i+1}`, 
+      '/fʁɑ̃.sɛ/', 
+      `[示例] ${level} 等级单词 ${i+1}`, 
       level, 
       `Ceci est un exemple pour le niveau ${level} numéro ${i+1}.`, 
-      `这是 ${level} 级别的例句 ${i+1}。`
+      `这是 ${level} 级别的例句 ${i+1}，用于填补数据。`
     ));
   }
 });

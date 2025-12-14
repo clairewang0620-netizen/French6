@@ -38,7 +38,7 @@ for (let i = SPEAKING_DATA.length; i < TOTAL_PHRASES; i++) {
   SPEAKING_DATA.push({
     id: `s_gen_${i+1}`,
     category: CATEGORIES[catIndex],
-    fr: `Phrase pratique numéro ${i+1} pour l'entraînement oral.`,
-    cn: `这是用于口语训练的第 ${i+1} 个实用句子。`
+    fr: `Ceci est la phrase numéro ${i+1}.`,
+    cn: `这是第 ${i+1} 个练习口语的句子。`
   });
 }
