@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-console.log("BUILD_TIMESTAMP:", Date.now());
+console.log("BUILD_TIMESTAMP:", Date.now()); // Force update
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

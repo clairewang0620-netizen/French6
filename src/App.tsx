@@ -7,7 +7,6 @@ import { Speaking } from './pages/Speaking';
 import { Reading } from './pages/Reading';
 import { Grammar } from './pages/Grammar';
 import { Quiz } from './pages/Quiz';
-import { AISearch } from './pages/AISearch';
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route path="reading" element={<Reading />} />
           <Route path="grammar" element={<Grammar />} />
           <Route path="quiz" element={<Quiz />} />
-          <Route path="ai-search" element={<AISearch />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

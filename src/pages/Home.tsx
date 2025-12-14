@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Mic, Book, PenTool, Brain, Search } from 'lucide-react';
+import { BookOpen, Mic, Book, PenTool, Brain } from 'lucide-react';
 
 interface ModuleCardProps {
   title: string;
@@ -79,15 +79,6 @@ export const Home: React.FC = () => {
           icon={Brain} 
           to="/quiz" 
           color="bg-orange-100"
-        />
-
-        {/* 6. AI Search */}
-        <ModuleCard 
-          title="AI 智能查询" 
-          sub="即时翻译与单词解析" 
-          icon={Search} 
-          to="/ai-search" 
-          color="bg-teal-100"
         />
       </div>
     </div>
