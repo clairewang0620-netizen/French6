@@ -20,12 +20,12 @@ const NavItem = ({ to, label, icon: Icon }: { to: string, label: string, icon: a
 
 export const Layout: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F9FC]">
+    <div className="min-h-screen flex flex-col bg-transparent">
       {/* Top Navigation - French Dark Blue */}
-      <nav className="bg-[#002654] shadow-lg sticky top-0 z-50">
-        <div className="max-w-[1100px] mx-auto px-4 h-16 flex items-center justify-between">
-          <NavLink to="/" className="text-white font-bold text-xl tracking-tight flex items-center gap-2">
-            <span className="bg-white text-[#002654] w-8 h-8 flex items-center justify-center rounded text-lg font-serif italic">F</span>
+      <nav className="bg-[#002654] shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between">
+          <NavLink to="/" className="text-white font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <span className="bg-white text-[#002654] w-8 h-8 flex items-center justify-center rounded text-lg font-serif italic shadow-sm">F</span>
             <span className="hidden sm:inline">French Master</span>
           </NavLink>
           
@@ -39,7 +39,7 @@ export const Layout: React.FC = () => {
         </div>
       </nav>
 
-      <main className="flex-1 w-full max-w-[1100px] mx-auto p-4 md:p-8">
+      <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 md:p-8">
         <Outlet />
       </main>
     </div>
