@@ -59,10 +59,10 @@ export const Quiz: React.FC = () => {
     }
   };
 
-  if (questions.length === 0) return <div className="p-4 text-center">No questions for this level.</div>;
+  if (questions.length === 0) return <div className="page-container text-center pt-20">No questions for this level.</div>;
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="page-container">
       <div className="flex gap-2 justify-center mb-8">
         {Object.values(Level).map(lvl => (
           <button
@@ -81,85 +81,87 @@ export const Quiz: React.FC = () => {
         ))}
       </div>
 
-      {finished ? (
-        <div className="bg-white rounded-2xl shadow-lg p-10 text-center border border-gray-100">
-          <h2 className="text-2xl font-bold mb-4 text-[#002654]">测试完成!</h2>
-          <div className="text-5xl font-black text-[#CE1126] mb-2">{score} / {questions.length}</div>
-          <p className="text-gray-500 mb-8">准确率: {Math.round((score / questions.length) * 100)}%</p>
-          <button 
-            onClick={resetQuiz}
-            className="flex items-center gap-2 mx-auto bg-[#002654] text-white px-8 py-3 rounded-full hover:bg-blue-900 transition-colors font-medium shadow-md"
-          >
-            <RefreshCw size={18} /> 再测一次
-          </button>
-        </div>
-      ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <div className="flex justify-between text-sm text-gray-400 mb-6 font-mono">
-            <span>Question {currentIndex + 1}/{questions.length}</span>
-            <span>Score: {score}</span>
+      <div className="max-w-2xl mx-auto">
+        {finished ? (
+          <div className="bg-white rounded-2xl shadow-lg p-10 text-center border border-gray-100">
+            <h2 className="text-2xl font-bold mb-4 text-[#002654]">测试完成!</h2>
+            <div className="text-5xl font-black text-[#CE1126] mb-2">{score} / {questions.length}</div>
+            <p className="text-gray-500 mb-8">准确率: {Math.round((score / questions.length) * 100)}%</p>
+            <button 
+              onClick={resetQuiz}
+              className="flex items-center gap-2 mx-auto bg-[#002654] text-white px-8 py-3 rounded-full hover:bg-blue-900 transition-colors font-medium shadow-md"
+            >
+              <RefreshCw size={18} /> 再测一次
+            </button>
           </div>
-
-          <h3 className="text-xl font-bold mb-8 text-[#1A202C] leading-snug">{questions[currentIndex].question}</h3>
-
-          <div className="space-y-3">
-            {questions[currentIndex].options.map((opt, idx) => {
-              let btnClass = "w-full p-4 text-left rounded-xl border-2 transition-all font-medium ";
-              if (showResult) {
-                if (idx === questions[currentIndex].answer) btnClass += "bg-green-50 border-green-500 text-green-800";
-                else if (idx === selectedOption) btnClass += "bg-red-50 border-red-500 text-red-800";
-                else btnClass += "bg-gray-50 border-transparent opacity-50";
-              } else {
-                if (idx === selectedOption) btnClass += "bg-blue-50 border-[#002654] text-[#002654]";
-                else btnClass += "hover:bg-gray-50 border-gray-100 text-gray-600";
-              }
-
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleOptionSelect(idx)}
-                  className={btnClass}
-                  disabled={showResult}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-
-          {showResult && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in">
-              <div className="flex items-center gap-2 font-bold mb-1">
-                {selectedOption === questions[currentIndex].answer ? (
-                  <span className="text-green-600 flex items-center gap-1"><CheckCircle size={18}/> 正确</span>
-                ) : (
-                  <span className="text-[#CE1126] flex items-center gap-1"><XCircle size={18}/> 错误</span>
-                )}
-              </div>
-              <p className="text-sm text-gray-600 mt-2">{questions[currentIndex].explanation}</p>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <div className="flex justify-between text-sm text-gray-400 mb-6 font-mono">
+              <span>Question {currentIndex + 1}/{questions.length}</span>
+              <span>Score: {score}</span>
             </div>
-          )}
 
-          <div className="mt-8">
-            {!showResult ? (
-              <button 
-                onClick={handleSubmit} 
-                disabled={selectedOption === null}
-                className="w-full bg-[#002654] text-white py-4 rounded-xl font-bold disabled:opacity-50 hover:bg-blue-900 transition-colors shadow-md"
-              >
-                提交
-              </button>
-            ) : (
-              <button 
-                onClick={handleNext}
-                className="w-full bg-[#CE1126] text-white py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-md"
-              >
-                {currentIndex === questions.length - 1 ? '查看结果' : '下一题'}
-              </button>
+            <h3 className="text-xl font-bold mb-8 text-[#1A202C] leading-snug">{questions[currentIndex].question}</h3>
+
+            <div className="space-y-3">
+              {questions[currentIndex].options.map((opt, idx) => {
+                let btnClass = "w-full p-4 text-left rounded-xl border-2 transition-all font-medium ";
+                if (showResult) {
+                  if (idx === questions[currentIndex].answer) btnClass += "bg-green-50 border-green-500 text-green-800";
+                  else if (idx === selectedOption) btnClass += "bg-red-50 border-red-500 text-red-800";
+                  else btnClass += "bg-gray-50 border-transparent opacity-50";
+                } else {
+                  if (idx === selectedOption) btnClass += "bg-blue-50 border-[#002654] text-[#002654]";
+                  else btnClass += "hover:bg-gray-50 border-gray-100 text-gray-600";
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleOptionSelect(idx)}
+                    className={btnClass}
+                    disabled={showResult}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+
+            {showResult && (
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100 animate-fade-in">
+                <div className="flex items-center gap-2 font-bold mb-1">
+                  {selectedOption === questions[currentIndex].answer ? (
+                    <span className="text-green-600 flex items-center gap-1"><CheckCircle size={18}/> 正确</span>
+                  ) : (
+                    <span className="text-[#CE1126] flex items-center gap-1"><XCircle size={18}/> 错误</span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-600 mt-2">{questions[currentIndex].explanation}</p>
+              </div>
             )}
+
+            <div className="mt-8">
+              {!showResult ? (
+                <button 
+                  onClick={handleSubmit} 
+                  disabled={selectedOption === null}
+                  className="w-full bg-[#002654] text-white py-4 rounded-xl font-bold disabled:opacity-50 hover:bg-blue-900 transition-colors shadow-md"
+                >
+                  提交
+                </button>
+              ) : (
+                <button 
+                  onClick={handleNext}
+                  className="w-full bg-[#CE1126] text-white py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-md"
+                >
+                  {currentIndex === questions.length - 1 ? '查看结果' : '下一题'}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

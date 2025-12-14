@@ -5,15 +5,17 @@ import { Eye, EyeOff, BookOpen } from 'lucide-react';
 
 export const Reading: React.FC = () => {
   return (
-    <div className="max-w-2xl mx-auto space-y-12 pb-20">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-[#002654]">精选阅读</h1>
-        <p className="text-gray-500">5 篇短文 · 关键词解析 · 沉浸式阅读</p>
-      </div>
+    <div className="page-container">
+      <div className="max-w-2xl mx-auto space-y-12 pb-20">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold text-[#002654]">精选阅读</h1>
+          <p className="text-gray-500">5 篇短文 · 关键词解析 · 沉浸式阅读</p>
+        </div>
 
-      {READING_DATA.map((article, index) => (
-        <ReadingCard key={article.id} article={article} index={index} />
-      ))}
+        {READING_DATA.map((article, index) => (
+          <ReadingCard key={article.id} article={article} index={index} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -11,9 +11,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p8', french: "À tout à l'heure.", chinese: "一会儿见。" },
   { id: 'p9', french: "C'est délicieux !", chinese: "这很好吃！" },
   { id: 'p10', french: "Excusez-moi.", chinese: "打扰了/抱歉。" },
-
-  // --- 新增数据 (New 100) ---
-  // 基础表达
   { id: 'p11', french: "Oui, s'il vous plaît.", chinese: "是的，谢谢。" },
   { id: 'p12', french: "Non, merci.", chinese: "不用了，谢谢。" },
   { id: 'p13', french: "De rien.", chinese: "不客气。" },
@@ -24,8 +21,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p18', french: "Ce n'est pas grave.", chinese: "没关系 / 严重。" },
   { id: 'p19', french: "Je suis désolé(e).", chinese: "我很抱歉。" },
   { id: 'p20', french: "Pardon.", chinese: "请原谅 / 抱歉。" },
-
-  // 介绍与交流
   { id: 'p21', french: "Comment vous appelez-vous ?", chinese: "您叫什么名字？" },
   { id: 'p22', french: "Je m'appelle David.", chinese: "我叫大卫。" },
   { id: 'p23', french: "Je suis chinois(e).", chinese: "我是中国人。" },
@@ -36,8 +31,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p28', french: "Parlez plus lentement, s'il vous plaît.", chinese: "请说慢一点。" },
   { id: 'p29', french: "Comment dit-on ça en français ?", chinese: "这个用法语怎么说？" },
   { id: 'p30', french: "Je comprends.", chinese: "我明白了。" },
-
-  // 出行与方向
   { id: 'p31', french: "Je cherche la gare.", chinese: "我在找火车站。" },
   { id: 'p32', french: "Où est le métro ?", chinese: "地铁在哪里？" },
   { id: 'p33', french: "C'est loin d'ici ?", chinese: "离这儿远吗？" },
@@ -48,8 +41,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p38', french: "Arrêtez-vous ici.", chinese: "请停在这里。" },
   { id: 'p39', french: "Un billet pour Paris, s'il vous plaît.", chinese: "请给我一张去巴黎的票。" },
   { id: 'p40', french: "À quelle heure part le bus ?", chinese: "巴士几点出发？" },
-
-  // 住宿与酒店
   { id: 'p41', french: "J'ai une réservation.", chinese: "我有预订。" },
   { id: 'p42', french: "Avez-vous une chambre libre ?", chinese: "还有空房吗？" },
   { id: 'p43', french: "Je voudrais une chambre double.", chinese: "我想要一间双人房。" },
@@ -60,8 +51,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p48', french: "Je peux laisser mes bagages ?", chinese: "我可以寄存行李吗？" },
   { id: 'p49', french: "À quelle heure est le check-out ?", chinese: "几点退房？" },
   { id: 'p50', french: "Pouvez-vous appeler un taxi ?", chinese: "能帮我叫辆出租车吗？" },
-
-  // 餐厅与点餐
   { id: 'p51', french: "Une table pour deux, s'il vous plaît.", chinese: "请给我一张两人的桌子。" },
   { id: 'p52', french: "La carte, s'il vous plaît.", chinese: "请给我菜单。" },
   { id: 'p53', french: "Avez-vous un menu en anglais ?", chinese: "有英文菜单吗？" },
@@ -72,8 +61,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p58', french: "L'addition, s'il vous plaît.", chinese: "请结账。" },
   { id: 'p59', french: "Acceptez-vous la carte ?", chinese: "可以刷卡吗？" },
   { id: 'p60', french: "Gardez la monnaie.", chinese: "不用找零了。" },
-
-  // 购物
   { id: 'p61', french: "Je regarde juste, merci.", chinese: "我只是看看，谢谢。" },
   { id: 'p62', french: "C'est trop cher.", chinese: "太贵了。" },
   { id: 'p63', french: "Vous avez une taille plus grande ?", chinese: "有大一点的尺码吗？" },
@@ -84,8 +71,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p68', french: "C'est ouvert le dimanche ?", chinese: "周日开门吗？" },
   { id: 'p69', french: "Je voudrais un sac.", chinese: "我想要个袋子。" },
   { id: 'p70', french: "Remboursement, s'il vous plaît.", chinese: "请退款。" },
-
-  // 时间与日期
   { id: 'p71', french: "Quelle heure est-il ?", chinese: "几点了？" },
   { id: 'p72', french: "Il est huit heures.", chinese: "现在是八点。" },
   { id: 'p73', french: "Aujourd'hui, c'est lundi.", chinese: "今天是星期一。" },
@@ -96,8 +81,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p78', french: "Bon week-end !", chinese: "周末愉快！" },
   { id: 'p79', french: "Joyeux anniversaire !", chinese: "生日快乐！" },
   { id: 'p80', french: "Bonne année !", chinese: "新年快乐！" },
-
-  // 感受与状态
   { id: 'p81', french: "J'ai faim.", chinese: "我饿了。" },
   { id: 'p82', french: "J'ai soif.", chinese: "我渴了。" },
   { id: 'p83', french: "Je suis fatigué(e).", chinese: "我累了。" },
@@ -108,8 +91,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p88', french: "Ça m'énerve.", chinese: "这让我很烦。" },
   { id: 'p89', french: "Je m'ennuie.", chinese: "我好无聊。" },
   { id: 'p90', french: "C'est génial !", chinese: "太棒了！" },
-
-  // 紧急情况与求助
   { id: 'p91', french: "Au secours !", chinese: "救命！" },
   { id: 'p92', french: "Aidez-moi !", chinese: "帮帮我！" },
   { id: 'p93', french: "J'ai perdu mon passeport.", chinese: "我丢了护照。" },
@@ -120,8 +101,6 @@ export const SPEAKING_DATA: Phrase[] = [
   { id: 'p98', french: "Où est la pharmacie ?", chinese: "药店在哪里？" },
   { id: 'p99', french: "C'est une urgence.", chinese: "这是紧急情况。" },
   { id: 'p100', french: "Je veux contacter l'ambassade.", chinese: "我想联系大使馆。" },
-
-  // 社交与告别
   { id: 'p101', french: "Bonne chance !", chinese: "祝你好运！" },
   { id: 'p102', french: "Amusez-vous bien.", chinese: "玩得开心。" },
   { id: 'p103', french: "Bon voyage !", chinese: "旅途愉快！" },

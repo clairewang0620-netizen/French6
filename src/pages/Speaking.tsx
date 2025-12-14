@@ -4,9 +4,9 @@ import { AudioButton } from '../components/AudioButton';
 
 export const Speaking: React.FC = () => {
   return (
-    <div className="w-full max-w-3xl mx-auto pb-12">
+    <div className="page-container">
       <div className="text-center mb-10 space-y-2">
-        <h1 className="text-3xl font-bold text-[#1A202C]">常用口语 110 句</h1>
+        <h1 className="text-3xl font-bold text-[#002654]">常用口语 110 句</h1>
         <p className="text-gray-500">高频生活表达 · 点击红色按钮跟读</p>
       </div>
 
