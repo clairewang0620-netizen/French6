@@ -6,8 +6,10 @@ import { Lock, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 // ==========================================
 const VALID_ACCESS_CODES = [
   "FM-2025-A8K2",
-  "FM-2025-L9P7",
-  "FM-XHS-001",
+  "FM-2025-Q7L9",
+  "FM-2025-XHS-91K3",
+  "FM-2025-K9M4",
+  "FM-2025-P8R2",
 ];
 
 const STORAGE_KEY = "french_master_access";
