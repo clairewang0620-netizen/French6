@@ -14,14 +14,14 @@ const NavItem = ({ to, label, icon: Icon, currentPath }: { to: string, label: st
     <a 
       href={`#${to}`} 
       className={clsx(
-        "flex items-center gap-1 md:gap-2 px-2 py-1.5 md:px-3 md:py-2 rounded-lg transition-all",
+        "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-2 px-3 py-2 md:px-3 md:py-2 rounded-lg transition-all shrink-0 min-w-[60px] md:min-w-0",
         isActive 
           ? "bg-[#CE1126] text-white shadow-md" 
           : "text-blue-100 hover:bg-white/10 hover:text-white"
       )}
     >
-      <Icon className="w-4 h-4 md:w-[18px] md:h-[18px]" />
-      <span className="text-[11px] md:text-sm font-medium whitespace-nowrap">{label}</span>
+      <Icon className="w-5 h-5 md:w-[18px] md:h-[18px]" />
+      <span className="text-[10px] md:text-sm font-medium whitespace-nowrap">{label}</span>
     </a>
   );
 };
@@ -32,13 +32,13 @@ export const Layout: React.FC<{ children: React.ReactNode; currentPath: string }
       {/* Top Navigation - French Dark Blue */}
       <nav className="bg-[#002654] shadow-lg sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
         <div className="max-w-[1200px] mx-auto px-2 md:px-4 h-16 flex items-center justify-between">
-          <a href="#/" className="text-white font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-90 transition-opacity shrink-0">
+          <a href="#/" className="text-white font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-90 transition-opacity shrink-0 mr-4">
             <span className="bg-white text-[#002654] w-8 h-8 flex items-center justify-center rounded text-lg font-serif italic shadow-sm">F</span>
             {/* Only show title on larger screens to make room for nav items on mobile */}
             <span className="hidden lg:inline">French Master</span>
           </a>
           
-          <div className="flex gap-1 md:gap-2 overflow-x-auto no-scrollbar ml-2">
+          <div className="flex gap-1 md:gap-2 overflow-x-auto no-scrollbar items-center flex-1 justify-start md:justify-end">
             <NavItem to="/vocab" label="单词" icon={BookOpen} currentPath={currentPath} />
             <NavItem to="/speaking" label="口语" icon={Mic} currentPath={currentPath} />
             <NavItem to="/grammar" label="语法" icon={PenTool} currentPath={currentPath} />

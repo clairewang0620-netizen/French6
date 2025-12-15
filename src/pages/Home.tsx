@@ -26,28 +26,28 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ title, sub, icon: Icon, to, the
     <Link 
       to={to} 
       className={clsx(
-        "group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-[1.02] overflow-hidden flex flex-col h-full border border-white",
+        "group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-[1.02] flex flex-col h-full border border-white overflow-visible",
         s.hoverBorder
       )}
     >
-      {/* Top Color Bar */}
-      <div className={clsx("h-1.5 w-full", s.bar)}></div>
+      {/* Top Color Bar - using rounded-t to avoid overflow-hidden clipping issues on some mobile browsers */}
+      <div className={clsx("h-1.5 w-full rounded-t-2xl", s.bar)}></div>
       
-      <div className="p-6 md:p-8 flex-1 flex flex-col items-start">
-        <div className={clsx("p-4 rounded-2xl mb-6 transition-colors group-hover:scale-110 duration-300", s.iconBg, s.iconText)}>
+      <div className="p-6 flex-1 flex flex-col items-start">
+        <div className={clsx("p-4 rounded-2xl mb-4 transition-colors group-hover:scale-110 duration-300", s.iconBg, s.iconText)}>
           <Icon size={32} strokeWidth={2} />
         </div>
         
-        <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-[#002654] transition-colors">
+        <h3 className="text-xl md:text-2xl font-bold text-[#1A202C] mb-2 group-hover:text-[#002654] transition-colors">
           {title}
         </h3>
         
-        <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-1">
+        <p className="text-gray-500 text-sm leading-relaxed mb-6">
           {sub}
         </p>
         
         <div className={clsx(
-          "flex items-center text-sm font-bold bg-gray-50 px-4 py-2 rounded-full transition-all group-hover:bg-[#002654] group-hover:text-white",
+          "mt-auto flex items-center text-sm font-bold bg-gray-50 px-4 py-2 rounded-full transition-all group-hover:bg-[#002654] group-hover:text-white",
           s.iconText
         )}>
           进入模块 <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -62,11 +62,11 @@ export const Home: React.FC = () => {
     <div className="flex flex-col items-center justify-center flex-1 w-full py-8 md:py-12">
       
       {/* Hero Section */}
-      <div className="text-center space-y-4 mb-16 animate-fade-in max-w-2xl mx-auto px-4">
+      <div className="text-center space-y-4 mb-12 animate-fade-in max-w-2xl mx-auto px-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-[#002654] text-xs font-bold uppercase tracking-wider mb-2">
           <Sparkles size={12} /> v2.0 全新升级
         </div>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-[#002654] drop-shadow-sm">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#002654] drop-shadow-sm">
           French Master
         </h1>
         <p className="text-gray-500 font-medium text-lg md:text-xl">
@@ -75,7 +75,7 @@ export const Home: React.FC = () => {
       </div>
 
       {/* Modules Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full animate-slide-up px-2 md:px-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full animate-slide-up px-2 md:px-0 max-w-6xl">
         {/* 1. Core Vocabulary */}
         <ModuleCard 
           title="核心单词" 
@@ -121,15 +121,15 @@ export const Home: React.FC = () => {
           theme="orange"
         />
 
-        {/* Placeholder / Future Module or Info Card */}
-        <div className="hidden lg:flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400 text-center hover:border-blue-200 hover:bg-blue-50/50 transition-colors cursor-default">
+        {/* Info Card */}
+        <div className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400 text-center hover:border-blue-200 hover:bg-blue-50/50 transition-colors cursor-default min-h-[200px]">
            <p className="font-medium text-sm">更多功能敬请期待...</p>
            <p className="text-xs mt-1">More features coming soon</p>
         </div>
       </div>
 
       {/* Footer Info */}
-      <footer className="mt-20 text-center text-gray-400 text-xs">
+      <footer className="mt-16 text-center text-gray-400 text-xs">
         <p>© French Master. Designed for Learners.</p>
       </footer>
     </div>
