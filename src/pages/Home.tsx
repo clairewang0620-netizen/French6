@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/Layout';
 import { BookOpen, Mic, Book, PenTool, Brain, ArrowRight, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { Vocab } from './pages/Vocab';
@@ -9,20 +8,53 @@ import { Grammar } from './pages/Grammar';
 import { Quiz } from './pages/Quiz';
 
 function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || '/');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      // slice(1) removes the '#'
+      setCurrentPath(window.location.hash.slice(1) || '/');
+    };
+
+    // Initialize logic
+    if (!window.location.hash) {
+        window.location.hash = '#/';
+    }
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  let page;
+  switch (currentPath) {
+    case '/':
+      page = <Home />;
+      break;
+    case '/vocab':
+      page = <Vocab />;
+      break;
+    case '/speaking':
+      page = <Speaking />;
+      break;
+    case '/reading':
+      page = <Reading />;
+      break;
+    case '/grammar':
+      page = <Grammar />;
+      break;
+    case '/quiz':
+      page = <Quiz />;
+      break;
+    default:
+      // Equivalent to Navigate to="/"
+      page = <Home />;
+      break;
+  }
+
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="vocab" element={<Vocab />} />
-          <Route path="speaking" element={<Speaking />} />
-          <Route path="reading" element={<Reading />} />
-          <Route path="grammar" element={<Grammar />} />
-          <Route path="quiz" element={<Quiz />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <Layout currentPath={currentPath}>
+      {page}
+    </Layout>
   );
 }
 
