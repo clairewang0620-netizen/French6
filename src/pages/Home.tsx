@@ -70,7 +70,7 @@ export const Home: React.FC = () => {
           French Master
         </h1>
         <p className="text-gray-500 font-medium text-lg md:text-xl">
-          专为中国学习者打造的沉浸式法语学习助手
+          沉浸式法语学习助手
         </p>
       </div>
 
