@@ -5,11 +5,60 @@ import { Lock, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 // 🔐 配置区域
 // ==========================================
 const VALID_ACCESS_CODES = [
+  // 原有访问码
   "FM-2025-A8K2",
   "FM-2025-Q7L9",
   "FM-2025-XHS-91K3",
   "FM-2025-K9M4",
   "FM-2025-P8R2",
+
+  // 新增访问码 Batch 1
+  "FM-XHS-2025-A1K9",
+  "FM-XHS-2025-B7M3",
+  "FM-XHS-2025-C4Q8",
+  "FM-XHS-2025-D9L2",
+  "FM-XHS-2025-E5R7",
+  "FM-XHS-2025-F8N4",
+  "FM-XHS-2025-G6P1",
+  "FM-XHS-2025-H2T9",
+  "FM-XHS-2025-J7A5",
+  "FM-XHS-2025-K3S8",
+
+  // 新增访问码 Batch 2
+  "FM-XHS-2025-L9D4",
+  "FM-XHS-2025-M1F7",
+  "FM-XHS-2025-N6H2",
+  "FM-XHS-2025-P8J5",
+  "FM-XHS-2025-Q4K9",
+  "FM-XHS-2025-R7L3",
+  "FM-XHS-2025-S2M8",
+  "FM-XHS-2025-T5N4",
+  "FM-XHS-2025-U9P6",
+  "FM-XHS-2025-V3Q1",
+
+  // 新增访问码 Batch 3
+  "FM-XHS-2025-W8R5",
+  "FM-XHS-2025-X6S9",
+  "FM-XHS-2025-Y4T2",
+  "FM-XHS-2025-Z1U7",
+  "FM-XHS-2025-A9V3",
+  "FM-XHS-2025-B5W8",
+  "FM-XHS-2025-C2X4",
+  "FM-XHS-2025-D7Y9",
+  "FM-XHS-2025-E3Z6",
+  "FM-XHS-2025-F1A8",
+
+  // 新增访问码 Batch 4
+  "FM-XHS-2025-G9B4",
+  "FM-XHS-2025-H6C2",
+  "FM-XHS-2025-J3D7",
+  "FM-XHS-2025-K8E1",
+  "FM-XHS-2025-L4F9",
+  "FM-XHS-2025-M2G5",
+  "FM-XHS-2025-N7H8",
+  "FM-XHS-2025-P3J6",
+  "FM-XHS-2025-Q9K2",
+  "FM-XHS-2025-R5L8",
 ];
 
 const STORAGE_KEY = "french_master_access";
