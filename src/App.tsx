@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
+import { AccessGuard } from './components/AccessGuard';
 import { Home } from './pages/Home';
 import { Vocab } from './pages/Vocab';
 import { Speaking } from './pages/Speaking';
@@ -51,10 +52,13 @@ function App() {
       break;
   }
 
+  // 🛡️ 使用 AccessGuard 包裹整个 Layout
   return (
-    <Layout currentPath={currentPath}>
-      {page}
-    </Layout>
+    <AccessGuard>
+      <Layout currentPath={currentPath}>
+        {page}
+      </Layout>
+    </AccessGuard>
   );
 }
 
