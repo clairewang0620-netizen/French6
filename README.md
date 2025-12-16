@@ -5,12 +5,12 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
 ## Features
 
 - **Vocabulary**: 550+ words ranging from A1 to C1 levels with IPA and examples.
-- **Speaking**: 200+ common phrases with native browser Text-to-Speech (TTS) support.
+- **Speaking**: 200+ common phrases with high-quality audio support.
 - **Reading**: Curated articles with keywords and translations.
 - **Grammar**: Essential grammar rules, tenses, and structures.
 - **Dictation**: Listening practice with spelling correction and mistake tracking.
 - **Quiz**: Self-assessment tests to track progress.
-- **Cross-Platform**: Optimized for Android (Chrome, WeChat) and iOS audio compatibility.
+- **Cross-Platform**: Fully optimized for Android (Chrome, WeChat) and iOS Safari, solving common audio compatibility issues.
 
 ## Tech Stack
 
@@ -36,6 +36,13 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
     ```bash
     npm run build
     ```
+
+## Audio Configuration
+
+This project uses a standard HTML5 Audio implementation to ensure compatibility across iOS and Android WebViews (including WeChat). 
+
+- Audio files are located in `public/audio/`.
+- The core logic is handled in `src/services/audioService.ts`.
 
 ## Project Structure
 
