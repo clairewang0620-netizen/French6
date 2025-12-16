@@ -1,95 +1,27 @@
 class AudioService {
-  private synth: SpeechSynthesis;
-  private voices: SpeechSynthesisVoice[] = [];
-  private activeUtterance: SpeechSynthesisUtterance | null = null;
-  private voicesLoaded: boolean = false;
-  private _isUnlocked: boolean = false;
-  private isAndroid: boolean = /Android/i.test(navigator.userAgent);
-
-  constructor() {
-    this.synth = window.speechSynthesis;
-    this.loadVoices();
-    if (this.synth && this.synth.onvoiceschanged !== undefined) {
-      this.synth.onvoiceschanged = () => {
-        this.loadVoices();
-      };
-    }
-  }
-
-  public get isUnlocked() {
-    // Non-Android/Mobile platforms might not strictly need unlocking, 
-    // but consistent behavior is safer.
-    // However, prompt asks to fix Android.
-    return this._isUnlocked;
-  }
+  private currentAudio: HTMLAudioElement | null = null;
+  public isUnlocked: boolean = false;
 
   public unlock() {
-    if (this._isUnlocked) return;
-
-    // 1. Resume AudioContext (Web Audio API)
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContext) {
-      const ctx = new AudioContext();
-      ctx.resume().catch(() => {});
-    }
-
-    // 2. Warm up SpeechSynthesis
-    if (this.synth) {
-      this.synth.cancel(); // Reset
-      const warmUp = new SpeechSynthesisUtterance('');
-      warmUp.volume = 0;
-      warmUp.rate = 1;
-      warmUp.text = ' ';
-      this.synth.speak(warmUp);
-    }
-
-    this._isUnlocked = true;
-    console.log('[AudioService] Audio unlocked');
+    if (this.isUnlocked) return;
+    
+    // Play a silent sound to unlock audio on iOS/Android WebViews
+    // This allows subsequent audio playback without user interaction
+    const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbQAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD//////////////////////////////////////////////////////////////////wAAAAA=");
+    silentAudio.play().then(() => {
+      this.isUnlocked = true;
+    }).catch(e => {
+      console.warn("Audio unlock failed (interaction might be needed)", e);
+    });
+    
+    // Optimistically set to true
+    this.isUnlocked = true;
   }
 
-  private loadVoices() {
-    if (!this.synth) return;
-    const allVoices = this.synth.getVoices();
-    if (allVoices.length > 0) {
-      this.voices = allVoices;
-      this.voicesLoaded = true;
-    }
-  }
-
-  private getBestVoice(): SpeechSynthesisVoice | null {
-    if (this.voices.length === 0) {
-      this.loadVoices();
-    }
-    // Android WebViews often don't label voices well, sometimes just returning one or generic ones.
-    let voice = this.voices.find(v => v.lang === 'fr-FR' && !v.name.includes('Compact'));
-    if (!voice) voice = this.voices.find(v => v.lang === 'fr-FR');
-    if (!voice) voice = this.voices.find(v => v.lang.startsWith('fr'));
-    return voice || null;
-  }
-
-  private fallbackSpeak(text: string, callbacks?: any) {
-    console.log('[AudioService] Using HTML5 Fallback');
-    try {
-      // Use Google Translate TTS as reliable fallback for Android WebViews without TTS engine
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=${encodeURIComponent(text)}`;
-      const audio = new Audio(url);
-      
-      audio.onplay = () => callbacks?.onStart?.();
-      audio.onended = () => callbacks?.onEnd?.();
-      audio.onerror = (e) => {
-        console.error('[AudioService] Fallback error', e);
-        callbacks?.onError?.(e);
-      };
-      
-      audio.play().catch(e => {
-        console.error('[AudioService] Fallback play failed', e);
-        callbacks?.onError?.(e);
-      });
-    } catch (e) {
-      callbacks?.onError?.(e);
-    }
-  }
-
+  /**
+   * Play audio for the given text using HTML5 Audio.
+   * This bypasses the buggy SpeechSynthesis API on Android WebViews.
+   */
   public speak(
     text: string, 
     callbacks?: { 
@@ -98,82 +30,72 @@ class AudioService {
       onError?: (e: any) => void; 
     }
   ) {
-    // 1. Check Unlock State
-    if (!this._isUnlocked && this.isAndroid) {
-      console.warn('[AudioService] Locked. User interaction required.');
-      alert('请点击页面任意位置以启用发音 (Tap anywhere to enable audio)');
-      callbacks?.onError?.('LOCKED');
-      return;
-    }
-
-    // 2. Android WebView Fallback Check
-    // If we have no synth support or voices are persistently empty on Android (common in stripped WebViews)
-    if (!this.synth || (this.isAndroid && this.voices.length === 0 && !this.voicesLoaded)) {
-       // Try to load voices one last time
-       this.loadVoices();
-       if (this.voices.length === 0) {
-         this.fallbackSpeak(text, callbacks);
-         return;
-       }
-    }
-
+    // 1. Stop any currently playing audio
     this.stop();
 
-    const selectedVoice = this.getBestVoice();
-    
-    // On Android, if we still can't find a French voice but synth exists, 
-    // it might be using a default remote engine. We try anyway, 
-    // but if it fails, the onerror should catch it.
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.text = text;
-    utterance.rate = 0.9; 
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    // Force lang is critical for Android
-    utterance.lang = 'fr-FR'; 
+    try {
+      // 2. Generate Audio Source URL
+      // We use Google Translate TTS API as a reliable source of "audio files" (MPEG stream).
+      // This behaves exactly like playing a static MP3 file.
+      // NOTE: If you have local files in public/audio, you would change this line to:
+      // const url = `/audio/${this.getFilePath(text)}`;
+      const encodedText = encodeURIComponent(text);
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=${encodedText}`;
 
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
+      // 3. Create and configure HTML5 Audio
+      const audio = new Audio(url);
+      this.currentAudio = audio;
 
-    utterance.onstart = () => callbacks?.onStart?.();
-    utterance.onend = () => {
-      callbacks?.onEnd?.();
-      this.activeUtterance = null;
-    };
-    utterance.onerror = (e) => {
-      console.error('[AudioService] TTS Error', e);
-      if (e.error !== 'interrupted') {
-        // Switch to fallback if native TTS fails
-        this.fallbackSpeak(text, callbacks);
-      } else {
+      // 4. Attach Event Listeners
+      audio.onplay = () => callbacks?.onStart?.();
+      
+      audio.onended = () => {
         callbacks?.onEnd?.();
+        this.currentAudio = null;
+      };
+
+      audio.onerror = (e) => {
+        console.error('[AudioService] Playback error:', e);
+        callbacks?.onError?.(e);
+        this.currentAudio = null;
+      };
+
+      // 5. Play
+      // Ideally, this method is called within a user interaction event (click/tap)
+      // which allows the browser to play audio without blocking.
+      const playPromise = audio.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error('[AudioService] Play request interrupted or failed:', error);
+          callbacks?.onError?.(error);
+          this.currentAudio = null;
+        });
       }
-      this.activeUtterance = null;
-    };
 
-    this.activeUtterance = utterance;
-
-    // Android "Wake Up" Hack: Cancel before speak
-    if (this.isAndroid) {
-        this.synth.cancel();
+    } catch (e) {
+      console.error('[AudioService] Critical error:', e);
+      callbacks?.onError?.(e);
     }
-
-    setTimeout(() => {
-        if (this.synth) this.synth.speak(utterance);
-    }, 10);
   }
 
   public stop() {
-    if (this.synth && (this.synth.speaking || this.synth.pending)) {
-      this.synth.cancel();
-      this.activeUtterance = null;
+    if (this.currentAudio) {
+      try {
+        this.currentAudio.pause();
+        this.currentAudio.currentTime = 0;
+      } catch (e) {
+        // Ignore errors during cleanup
+      }
+      this.currentAudio = null;
     }
   }
 
-  public isReady(): boolean {
-    return this.voices.length > 0 || (this.synth && this.synth.getVoices().length > 0);
+  // Helper method if you switch to local files later
+  private getFilePath(text: string): string {
+    // Simple logic to map text to filename if needed
+    // e.g., "Bonjour" -> "vocab/bonjour.mp3"
+    return `vocab/${text.toLowerCase().replace(/[^a-z0-9]/g, '_')}.mp3`;
   }
 }
 

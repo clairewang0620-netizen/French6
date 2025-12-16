@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { AccessGuard } from './components/AccessGuard';
-import { AudioUnlocker } from './components/AudioUnlocker';
 import { Home } from './pages/Home';
 import { Vocab } from './pages/Vocab';
 import { Speaking } from './pages/Speaking';
@@ -63,7 +62,6 @@ function App() {
 
   return (
     <AccessGuard>
-      <AudioUnlocker />
       <Layout currentPath={currentPath}>
         {page}
       </Layout>
