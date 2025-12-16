@@ -7,6 +7,8 @@ import { Speaking } from './pages/Speaking';
 import { Reading } from './pages/Reading';
 import { Grammar } from './pages/Grammar';
 import { Quiz } from './pages/Quiz';
+import { Mistakes } from './pages/Mistakes'; // Added Mistakes import for route consistency (though usually accessible via quiz result, nice to have logic)
+import { Dictation } from './pages/Dictation';
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || '/');
@@ -45,6 +47,12 @@ function App() {
       break;
     case '/quiz':
       page = <Quiz />;
+      break;
+    case '/dictation':
+      page = <Dictation />;
+      break;
+    case '/mistakes':
+      page = <Mistakes />;
       break;
     default:
       // Equivalent to Navigate to="/"

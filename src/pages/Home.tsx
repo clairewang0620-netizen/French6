@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '../components/Layout';
-import { BookOpen, Mic, Book, PenTool, Brain, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, Mic, Book, PenTool, Brain, ArrowRight, Sparkles, Headphones } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface ModuleCardProps {
@@ -8,7 +8,7 @@ interface ModuleCardProps {
   sub: string;
   icon: any;
   to: string;
-  theme: 'blue' | 'red' | 'green' | 'purple' | 'orange';
+  theme: 'blue' | 'red' | 'green' | 'purple' | 'orange' | 'cyan';
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({ title, sub, icon: Icon, to, theme }) => {
@@ -18,6 +18,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ title, sub, icon: Icon, to, the
     green:  { bar: 'bg-emerald-600', iconBg: 'bg-emerald-50', iconText: 'text-emerald-600', hoverBorder: 'hover:border-emerald-300' },
     purple: { bar: 'bg-violet-600', iconBg: 'bg-violet-50', iconText: 'text-violet-600', hoverBorder: 'hover:border-violet-300' },
     orange: { bar: 'bg-amber-50',  iconBg: 'bg-amber-50',  iconText: 'text-amber-600',  hoverBorder: 'hover:border-amber-300' },
+    cyan:   { bar: 'bg-cyan-600',  iconBg: 'bg-cyan-50',  iconText: 'text-cyan-600',  hoverBorder: 'hover:border-cyan-300' },
   };
 
   const s = themeStyles[theme];
@@ -97,7 +98,7 @@ export const Home: React.FC = () => {
         {/* 3. Reading */}
         <ModuleCard 
           title="精选阅读" 
-          sub="15 篇法语短文沉浸式阅读，提供关键词解析与全文朗读功能。" 
+          sub="15 篇短文沉浸式阅读，提供关键词解析与全文朗读功能。" 
           icon={Book} 
           to="/reading" 
           theme="green"
@@ -111,8 +112,17 @@ export const Home: React.FC = () => {
           to="/grammar" 
           theme="purple"
         />
+
+        {/* 5. Dictation (New) */}
+        <ModuleCard 
+          title="单词听写" 
+          sub="磨耳朵神器。听音拼写，智能纠错，自动收录错题，强化拼写记忆。" 
+          icon={Headphones} 
+          to="/dictation" 
+          theme="cyan"
+        />
         
-        {/* 5. Test */}
+        {/* 6. Test */}
         <ModuleCard 
           title="阶段测试" 
           sub="全等级自测题库，智能记录错题，助你查漏补缺，巩固所学。" 
@@ -120,12 +130,6 @@ export const Home: React.FC = () => {
           to="/quiz" 
           theme="orange"
         />
-
-        {/* Info Card */}
-        <div className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400 text-center hover:border-blue-200 hover:bg-blue-50/50 transition-colors cursor-default min-h-[200px]">
-           <p className="font-medium text-sm">更多功能敬请期待...</p>
-           <p className="text-xs mt-1">More features coming soon</p>
-        </div>
       </div>
 
       {/* Footer Info */}

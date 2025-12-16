@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Mic, Book, PenTool, Brain } from 'lucide-react';
+import { BookOpen, Mic, Book, PenTool, Brain, Headphones } from 'lucide-react';
 import { clsx } from 'clsx';
 
 // Export Link for other components to use
@@ -43,6 +43,7 @@ export const Layout: React.FC<{ children: React.ReactNode; currentPath: string }
             <NavItem to="/speaking" label="口语" icon={Mic} currentPath={currentPath} />
             <NavItem to="/grammar" label="语法" icon={PenTool} currentPath={currentPath} />
             <NavItem to="/reading" label="阅读" icon={Book} currentPath={currentPath} />
+            <NavItem to="/dictation" label="听写" icon={Headphones} currentPath={currentPath} />
             <NavItem to="/quiz" label="测试" icon={Brain} currentPath={currentPath} />
           </div>
         </div>
