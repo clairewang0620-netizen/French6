@@ -36,6 +36,7 @@ export interface Phrase {
   id: string;
   french: string;
   chinese: string;
+  ipa?: string; // Added IPA support
 }
 
 export interface ArticleKeyword {

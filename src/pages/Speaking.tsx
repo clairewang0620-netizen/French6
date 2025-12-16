@@ -20,6 +20,9 @@ export const Speaking: React.FC = () => {
               <span className="text-xs font-bold text-gray-300 mt-1.5 w-6">{index + 1}</span>
               <div>
                 <h3 className="text-xl font-semibold text-[#002654] mb-1 leading-snug">{phrase.french}</h3>
+                {phrase.ipa && (
+                  <p className="text-sm text-gray-400 font-mono mb-1">{phrase.ipa}</p>
+                )}
                 <p className="text-gray-500 text-sm">{phrase.chinese}</p>
               </div>
             </div>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Level, QuizQuestion } from '../types';
 import { QUIZ_DATA } from '../data/quiz';
 import { storageService } from '../services/storageService';
-import { CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, Book } from 'lucide-react';
+import { Link } from '../components/Layout';
 import { clsx } from 'clsx';
 
 export const Quiz: React.FC = () => {
@@ -62,8 +63,19 @@ export const Quiz: React.FC = () => {
   if (questions.length === 0) return <div className="page-container text-center pt-20">No questions for this level.</div>;
 
   return (
-    <div className="page-container">
-      <div className="flex gap-2 justify-center mb-8">
+    <div className="page-container relative">
+      {/* Linkage to Mistakes Notebook */}
+      <div className="absolute top-0 right-0 md:top-8 md:right-8 z-10">
+        <Link 
+          to="/mistakes" 
+          className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#002654] bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-all hover:shadow-md"
+        >
+          <Book size={16} />
+          查看错题集
+        </Link>
+      </div>
+
+      <div className="flex gap-2 justify-center mb-8 mt-8 md:mt-0">
         {Object.values(Level).map(lvl => (
           <button
             key={lvl}
