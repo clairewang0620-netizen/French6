@@ -2,25 +2,26 @@ class AudioService {
   private currentAudio: HTMLAudioElement | null = null;
   public isUnlocked: boolean = false;
 
+  /**
+   * Unlock audio context/permissions on mobile devices (triggered by user interaction)
+   * This plays a silent buffer to "warm up" the audio engine.
+   */
   public unlock() {
     if (this.isUnlocked) return;
     
-    // Play a silent sound to unlock audio on iOS/Android WebViews
-    // This allows subsequent audio playback without user interaction
-    const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbQAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD//////////////////////////////////////////////////////////////////wAAAAA=");
-    silentAudio.play().then(() => {
+    // Shortest possible silent MP3 base64
+    const silent = "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbQAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD//////////////////////////////////////////////////////////////////wAAAAA=";
+    const a = new Audio(silent);
+    a.play().then(() => {
       this.isUnlocked = true;
+      console.log("[AudioService] Audio unlocked");
     }).catch(e => {
-      console.warn("Audio unlock failed (interaction might be needed)", e);
+      console.warn("[AudioService] Unlock failed (interaction needed)", e);
     });
-    
-    // Optimistically set to true
-    this.isUnlocked = true;
   }
 
   /**
-   * Play audio for the given text using HTML5 Audio.
-   * This bypasses the buggy SpeechSynthesis API on Android WebViews.
+   * Play audio with hybrid strategy
    */
   public speak(
     text: string, 
@@ -30,72 +31,97 @@ class AudioService {
       onError?: (e: any) => void; 
     }
   ) {
-    // 1. Stop any currently playing audio
+    // 1. Stop any currently playing audio or TTS
     this.stop();
 
-    try {
-      // 2. Generate Audio Source URL
-      // We use Google Translate TTS API as a reliable source of "audio files" (MPEG stream).
-      // This behaves exactly like playing a static MP3 file.
-      // NOTE: If you have local files in public/audio, you would change this line to:
-      // const url = `/audio/${this.getFilePath(text)}`;
-      const encodedText = encodeURIComponent(text);
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=${encodedText}`;
+    const isAndroid = /Android/i.test(navigator.userAgent);
 
-      // 3. Create and configure HTML5 Audio
-      const audio = new Audio(url);
-      this.currentAudio = audio;
+    if (isAndroid) {
+      // --- ANDROID STRATEGY: HTML5 Audio ---
+      // We use HTML5 Audio to bypass Android WebView TTS issues.
+      // We point to Google Translate TTS API which acts as a "remote file".
+      // This ensures playback works immediately without needing to upload local MP3s manually.
+      try {
+        const encodedText = encodeURIComponent(text);
+        const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=${encodedText}`;
+        
+        const audio = new Audio(url);
+        this.currentAudio = audio;
 
-      // 4. Attach Event Listeners
-      audio.onplay = () => callbacks?.onStart?.();
-      
-      audio.onended = () => {
-        callbacks?.onEnd?.();
-        this.currentAudio = null;
-      };
-
-      audio.onerror = (e) => {
-        console.error('[AudioService] Playback error:', e);
-        callbacks?.onError?.(e);
-        this.currentAudio = null;
-      };
-
-      // 5. Play
-      // Ideally, this method is called within a user interaction event (click/tap)
-      // which allows the browser to play audio without blocking.
-      const playPromise = audio.play();
-
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error('[AudioService] Play request interrupted or failed:', error);
-          callbacks?.onError?.(error);
+        // Bind events
+        audio.onplay = () => callbacks?.onStart?.();
+        audio.onended = () => {
+          callbacks?.onEnd?.();
           this.currentAudio = null;
-        });
-      }
+        };
+        audio.onerror = (e) => {
+          console.error('[AudioService] Android HTML5 Audio error:', e);
+          // Fallback: try local file if remote fails (e.g. offline)
+          if (audio.src !== "/audio/sample-fr.mp3") {
+              console.log("Retrying with local sample file...");
+              audio.src = "/audio/sample-fr.mp3";
+              audio.play();
+          } else {
+              callbacks?.onError?.(e);
+              this.currentAudio = null;
+          }
+        };
 
-    } catch (e) {
-      console.error('[AudioService] Critical error:', e);
-      callbacks?.onError?.(e);
+        // Play
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.error('[AudioService] Play blocked:', e);
+            callbacks?.onError?.(e);
+          });
+        }
+      } catch (e) {
+        console.error('[AudioService] Android setup failed:', e);
+        callbacks?.onError?.(e);
+      }
+    } else {
+      // --- IOS / DESKTOP STRATEGY: Web Speech API ---
+      // iOS Safari handles SpeechSynthesis very well and it saves bandwidth.
+      if ('speechSynthesis' in window) {
+        try {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'fr-FR'; 
+          utterance.rate = 0.9; 
+
+          utterance.onstart = () => callbacks?.onStart?.();
+          utterance.onend = () => callbacks?.onEnd?.();
+          utterance.onerror = (e) => {
+             console.error('[AudioService] TTS error:', e);
+             callbacks?.onError?.(e);
+          };
+
+          // iOS quirk: Cancel before speaking to prevent queue deadlocks
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.error('[AudioService] TTS setup failed:', e);
+          callbacks?.onError?.(e);
+        }
+      } else {
+        callbacks?.onError?.('TTS Not supported');
+      }
     }
   }
 
   public stop() {
+    // Stop HTML5 Audio
     if (this.currentAudio) {
       try {
         this.currentAudio.pause();
         this.currentAudio.currentTime = 0;
-      } catch (e) {
-        // Ignore errors during cleanup
-      }
+      } catch (e) {}
       this.currentAudio = null;
     }
-  }
 
-  // Helper method if you switch to local files later
-  private getFilePath(text: string): string {
-    // Simple logic to map text to filename if needed
-    // e.g., "Bonjour" -> "vocab/bonjour.mp3"
-    return `vocab/${text.toLowerCase().replace(/[^a-z0-9]/g, '_')}.mp3`;
+    // Stop TTS
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
   }
 }
 
