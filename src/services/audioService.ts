@@ -1,111 +1,33 @@
-class AudioService {
-  private currentAudio: HTMLAudioElement | null = null;
-  public isUnlocked: boolean = false;
-  private audioContext: any = null; // Use any to support webkitAudioContext without strict type issues
-
+// 极简音频服务：只负责生成 URL 并播放
+export const audioService = {
   /**
-   * GLOBAL AUDIO UNLOCK
-   * Critical for iOS/Android/WeChat compatibility.
-   * Must be called inside a synchronous user interaction event (click/touch).
+   * 播放法语发音
+   * 使用 Google TTS 接口获取标准 MP3 流
+   * 严格遵循 new Audio() 规范，无 AudioContext
    */
-  public unlock() {
-    if (this.isUnlocked) return;
+  play: (text: string) => {
+    if (!text) return;
 
     try {
-      // 1. Resume/Create AudioContext (Web Audio API)
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioContextClass) {
-        this.audioContext = new AudioContextClass();
-        this.audioContext.resume().catch((e: any) => console.warn('AudioContext resume failed', e));
-      }
+      // 构造 Google TTS MP3 地址
+      // client=tw-ob 是公开稳定接口
+      // tl=fr 指定法语
+      const encodedText = encodeURIComponent(text);
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=fr&q=${encodedText}`;
 
-      // 2. Play silent HTML5 Audio (DOM Audio)
-      // Minimal silent MP3 data URI to wake up the audio thread
-      const silentMp3 = 'data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAP/7kGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
-      const silentAudio = new Audio(silentMp3);
-      silentAudio.play().then(() => {
-        console.log('[AudioService] Audio unlocked successfully');
-      }).catch((e) => {
-        // Expected if interaction is not valid, but we try anyway
-        console.warn('[AudioService] Silent unlock failed', e);
-      });
-
-      this.isUnlocked = true;
-    } catch (e) {
-      console.error('[AudioService] Unlock error', e);
-    }
-  }
-
-  /**
-   * Unified speak method using HTML5 Audio only.
-   */
-  public speak(
-    text: string, 
-    callbacks?: { 
-      onStart?: () => void; 
-      onEnd?: () => void; 
-      onError?: (e: any) => void; 
-    }
-  ) {
-    // 1. Stop previous audio
-    this.stop();
-
-    // 2. Resource Path
-    // Using the fixed sample file to ensure sound output on all devices as requested.
-    const src = "/audio/fr_sample.mp3";
-
-    try {
-      const audio = new Audio(src);
-      this.currentAudio = audio;
-
-      // 3. Mandatory Attributes for Mobile
-      audio.preload = "auto";
-      // @ts-ignore
-      audio.playsInline = true;
-
-      // 4. Event Bindings
-      audio.onplay = () => callbacks?.onStart?.();
-      audio.onended = () => {
-        callbacks?.onEnd?.();
-        this.currentAudio = null;
-      };
-      audio.onerror = (e) => {
-        console.error('[AudioService] Playback error', e);
-        callbacks?.onError?.(e);
-        this.currentAudio = null;
-      };
-
-      // 5. Load & Play
-      audio.load();
+      const audio = new Audio(url);
       
-      // Reset time to ensure clean start
+      // 强制设置
+      audio.preload = 'auto';
       audio.currentTime = 0;
 
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((e) => {
-          console.warn('[AudioService] Play blocked. Ensure audioService.unlock() was called on user interaction.', e);
-          callbacks?.onError?.(e);
-        });
-      }
-
+      // 播放并捕获错误（如网络问题）
+      audio.play().catch(err => {
+        console.error('[Audio] Playback failed:', err);
+      });
+      
     } catch (e) {
-      console.error('[AudioService] Setup error', e);
-      callbacks?.onError?.(e);
+      console.error('[Audio] Setup failed:', e);
     }
   }
-
-  public stop() {
-    if (this.currentAudio) {
-      try {
-        this.currentAudio.pause();
-        this.currentAudio.currentTime = 0;
-      } catch (e) {
-        // Ignore errors during stop
-      }
-      this.currentAudio = null;
-    }
-  }
-}
-
-export const audioService = new AudioService();
+};

@@ -38,7 +38,8 @@ export const Dictation: React.FC = () => {
 
   const playAudio = () => {
     if (currentWord) {
-      audioService.speak(currentWord.french);
+      // 简单调用新的播放接口
+      audioService.play(currentWord.french);
       // Re-focus input after click play
       inputRef.current?.focus();
     }
@@ -46,7 +47,6 @@ export const Dictation: React.FC = () => {
 
   const normalize = (str: string) => {
     // Basic normalization: lowercase, trim. 
-    // In a real app, you might remove accents for lenient mode, but here we require strict accents for learning.
     return str.trim().toLowerCase();
   };
 

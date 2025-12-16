@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Volume2, Loader2 } from 'lucide-react';
+import React from 'react';
+import { Volume2 } from 'lucide-react';
 import { audioService } from '../services/audioService';
 import { clsx } from 'clsx';
 
@@ -10,61 +10,25 @@ interface AudioButtonProps {
 }
 
 export const AudioButton: React.FC<AudioButtonProps> = ({ text, className, size = 20 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
+  
   const handlePlay = (e: React.MouseEvent) => {
+    // 阻止冒泡，防止触发卡片点击等
     e.stopPropagation();
     
-    // CRITICAL: Unlock audio engine on direct user interaction
-    audioService.unlock();
-
-    if (isPlaying || isLoading) {
-      audioService.stop();
-      setIsPlaying(false);
-      setIsLoading(false);
-      return;
-    }
-
-    // Set temporary loading state before audio actually starts
-    setIsLoading(true);
-
-    audioService.speak(text, {
-      onStart: () => {
-        setIsLoading(false);
-        setIsPlaying(true);
-      },
-      onEnd: () => {
-        setIsPlaying(false);
-        setIsLoading(false);
-      },
-      onError: () => {
-        setIsPlaying(false);
-        setIsLoading(false);
-      }
-    });
+    // 直接调用播放，无任何中间状态
+    audioService.play(text);
   };
 
   return (
     <button 
       onClick={handlePlay}
       className={clsx(
-        "p-2 rounded-full transition-all duration-200 flex items-center justify-center relative",
-        // Visual state management
-        isPlaying 
-          ? "bg-blue-100 text-blue-600 scale-110" 
-          : "hover:bg-gray-100 active:bg-gray-200 text-primary hover:scale-105 active:scale-95",
+        "p-2 rounded-full transition-all flex items-center justify-center active:scale-95 hover:bg-black/5",
         className
       )}
-      aria-label={isPlaying ? "Stop audio" : "Play audio"}
+      title="点击播放发音"
     >
-      {isLoading ? (
-        <Loader2 size={size} className="animate-spin" />
-      ) : isPlaying ? (
-        <Volume2 size={size} className="animate-pulse" />
-      ) : (
-        <Volume2 size={size} />
-      )}
+      <Volume2 size={size} />
     </button>
   );
 };
