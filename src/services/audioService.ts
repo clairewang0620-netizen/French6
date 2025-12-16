@@ -1,99 +1,152 @@
 class AudioService {
   private synth: SpeechSynthesis;
-  private voice: SpeechSynthesisVoice | null = null;
+  private voices: SpeechSynthesisVoice[] = [];
+  // ⚠️ CRITICAL: Keep a reference to the active utterance to prevent garbage collection
+  // causing audio to cut off prematurely on iOS Safari.
+  private activeUtterance: SpeechSynthesisUtterance | null = null;
+  private voicesLoaded: boolean = false;
 
   constructor() {
     this.synth = window.speechSynthesis;
     
+    // Initial load attempt
+    this.loadVoices();
+
+    // Async load listener (Required for Chrome/Android)
+    if (this.synth && this.synth.onvoiceschanged !== undefined) {
+      this.synth.onvoiceschanged = () => {
+        this.loadVoices();
+      };
+    }
+  }
+
+  private loadVoices() {
+    if (!this.synth) return;
+    
+    const allVoices = this.synth.getVoices();
+    if (allVoices.length > 0) {
+      this.voices = allVoices;
+      this.voicesLoaded = true;
+      console.log(`[AudioService] Voices loaded: ${allVoices.length} available.`);
+    }
+  }
+
+  /**
+   * Selects the best possible French voice based on platform quirks.
+   */
+  private getBestVoice(): SpeechSynthesisVoice | null {
+    if (this.voices.length === 0) {
+      this.loadVoices(); // Last ditch attempt
+    }
+
+    // 1. Exact match for France French (fr-FR)
+    // Priority: Premium/Enhanced voices often contain "Siri", "Google", "Thomas", "Audrey"
+    let voice = this.voices.find(v => v.lang === 'fr-FR' && !v.name.includes('Compact'));
+    
+    // 2. Any fr-FR
+    if (!voice) {
+      voice = this.voices.find(v => v.lang === 'fr-FR');
+    }
+
+    // 3. Fallback to any French (fr-CA, fr-BE, etc.)
+    if (!voice) {
+      voice = this.voices.find(v => v.lang.startsWith('fr'));
+    }
+
+    return voice || null;
+  }
+
+  /**
+   * Public API to speak text.
+   * Now accepts callbacks to manage UI state.
+   */
+  public speak(
+    text: string, 
+    callbacks?: { 
+      onStart?: () => void; 
+      onEnd?: () => void; 
+      onError?: (e: any) => void; 
+    }
+  ) {
     if (!this.synth) {
-      console.warn('SpeechSynthesis is not supported in this environment.');
+      console.error('[AudioService] SpeechSynthesis not supported.');
+      callbacks?.onError?.('Not supported');
       return;
     }
 
-    // Initialize voice immediately
-    this.initVoice();
+    // 1. Cancel any currently playing audio (Global Reset)
+    this.stop();
+
+    // 2. Select Voice
+    const selectedVoice = this.getBestVoice();
     
-    // Re-initialize when voices are loaded (crucial for Chrome/Android where voices load asynchronously)
-    if (this.synth.onvoiceschanged !== undefined) {
-      this.synth.onvoiceschanged = () => this.initVoice();
-    }
-  }
+    // Debugging info
+    const ua = navigator.userAgent;
+    const platform = /iPad|iPhone|iPod/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : 'Desktop';
+    console.log(`[AudioService] Platform: ${platform}`);
+    console.log(`[AudioService] Voice: ${selectedVoice ? `${selectedVoice.name} (${selectedVoice.lang})` : 'System Default'}`);
 
-  private initVoice() {
-    if (!this.synth) return;
-    
-    const voices = this.synth.getVoices();
-    if (voices.length === 0) return;
-
-    // ---------------------------------------------------------
-    // CRITICAL FIX: Strict French Voice Selection Logic
-    // ---------------------------------------------------------
-    // 1. Prioritize "fr-FR" (Standard French)
-    // 2. Normalize 'fr_FR' to 'fr-FR' (for older Android WebViews)
-    // 3. Fallback to any 'fr' (fr-CA, fr-BE, etc.)
-    // 4. Removed exclusion of "Google" voices (they are often the best quality)
-    
-    this.voice = voices.find(v => v.lang.replace('_', '-') === 'fr-FR') || 
-                 voices.find(v => v.lang.startsWith('fr')) || 
-                 null;
-
-    if (this.voice) {
-      console.log(`[AudioService] Voice initialized: ${this.voice.name} (${this.voice.lang})`);
-    } else {
-      console.warn('[AudioService] No specific French voice found. Will force lang="fr-FR" as fallback.');
-    }
-  }
-
-  public speak(text: string, rate: number = 0.85) {
-    if (!this.synth) return;
-
-    // Retry voice selection if it failed initially (race condition fix)
-    // This is vital for Safari which might reload voices on interaction
-    if (!this.voice) {
-      this.initVoice();
-    }
-
-    if (this.synth.speaking) {
-      this.synth.cancel();
-    }
-
+    // 3. Create Utterance
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // ---------------------------------------------------------
-    // CRITICAL FIX: Enforce Language & Voice Object
-    // ---------------------------------------------------------
-    // 1. Always set lang to fr-FR, even if no voice object found
-    utterance.lang = 'fr-FR';
+    // 4. Configure Utterance
+    utterance.text = text;
+    utterance.rate = 0.9; // Slightly slower for better clarity
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
 
-    // 2. Explicitly attach the French voice object if available
-    // This prevents the browser from using the System Default (English) 
-    // even if lang is set to French (common bug in mobile Safari/Chrome).
-    if (this.voice) {
-      utterance.voice = this.voice;
+    // IMPORTANT: Set lang explicitly. 
+    // Android Chrome sometimes ignores the voice object if lang isn't set matching it.
+    utterance.lang = selectedVoice ? selectedVoice.lang : 'fr-FR';
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
 
-    utterance.rate = rate;
-    utterance.pitch = 1;
-
-    // Debugging Protection: Verify in console that "voice" is NOT English
-    console.log(
-      "[TTS]",
-      "text:", text.length > 20 ? text.substring(0, 20) + "..." : text,
-      "lang:", utterance.lang,
-      "voice:", utterance.voice ? `${utterance.voice.name} (${utterance.voice.lang})` : "System Default"
-    );
-
-    utterance.onerror = (e) => {
-      console.error('Speech synthesis error:', e);
+    // 5. Event Handling
+    utterance.onstart = () => {
+      console.log('[AudioService] Start');
+      callbacks?.onStart?.();
     };
 
-    this.synth.speak(utterance);
+    utterance.onend = () => {
+      console.log('[AudioService] End');
+      callbacks?.onEnd?.();
+      this.activeUtterance = null; // Release reference
+    };
+
+    utterance.onerror = (e) => {
+      console.error('[AudioService] Error', e);
+      // Cancel is considered an error in some browsers, but we treat it as an end for UI purposes if needed
+      // but here we send error.
+      if (e.error !== 'interrupted') {
+          callbacks?.onError?.(e);
+      } else {
+          // If interrupted (by another click), strictly speaking, it ended.
+          callbacks?.onEnd?.(); 
+      }
+      this.activeUtterance = null;
+    };
+
+    // 6. Assign to class property to prevent Garbage Collection (Crucial for iOS)
+    this.activeUtterance = utterance;
+
+    // 7. Speak
+    // Small timeout ensures the 'cancel' operation has fully processed in the engine
+    setTimeout(() => {
+        this.synth.speak(utterance);
+    }, 10);
   }
 
   public stop() {
-    if (this.synth && this.synth.speaking) {
+    if (this.synth.speaking || this.synth.pending) {
       this.synth.cancel();
+      this.activeUtterance = null;
     }
+  }
+
+  public isReady(): boolean {
+    return this.voices.length > 0 || this.synth.getVoices().length > 0;
   }
 }
 
