@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { AccessGuard } from './components/AccessGuard';
+import { AudioUnlocker } from './components/AudioUnlocker';
 import { Home } from './pages/Home';
 import { Vocab } from './pages/Vocab';
 import { Speaking } from './pages/Speaking';
 import { Reading } from './pages/Reading';
 import { Grammar } from './pages/Grammar';
 import { Quiz } from './pages/Quiz';
-import { Mistakes } from './pages/Mistakes'; // Added Mistakes import for route consistency (though usually accessible via quiz result, nice to have logic)
+import { Mistakes } from './pages/Mistakes'; 
 import { Dictation } from './pages/Dictation';
 
 function App() {
@@ -60,9 +61,9 @@ function App() {
       break;
   }
 
-  // 🛡️ 使用 AccessGuard 包裹整个 Layout
   return (
     <AccessGuard>
+      <AudioUnlocker />
       <Layout currentPath={currentPath}>
         {page}
       </Layout>

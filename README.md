@@ -1,20 +1,49 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# French Master 🇫🇷
 
-# Run and deploy your AI Studio app
+A comprehensive static web app for learning French, featuring vocabulary, grammar, speaking, and reading modules.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/1f2aAa_QXm826Grnz-yYJBIRERDqzvTWv
+- **Vocabulary**: 550+ words ranging from A1 to C1 levels with IPA and examples.
+- **Speaking**: 200+ common phrases with native browser Text-to-Speech (TTS) support.
+- **Reading**: Curated articles with keywords and translations.
+- **Grammar**: Essential grammar rules, tenses, and structures.
+- **Dictation**: Listening practice with spelling correction and mistake tracking.
+- **Quiz**: Self-assessment tests to track progress.
+- **Cross-Platform**: Optimized for Android (Chrome, WeChat) and iOS audio compatibility.
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- **Framework**: React 18
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
 
+## Getting Started
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+2.  **Start development server**
+    ```bash
+    npm run dev
+    ```
+
+3.  **Build for production**
+    ```bash
+    npm run build
+    ```
+
+## Project Structure
+
+- `src/data`: Contains static content for vocab, grammar, reading, etc.
+- `src/pages`: Main application views.
+- `src/services`: Audio and storage logic.
+- `src/components`: Reusable UI components.
+
+## License
+
+Private / Proprietary
