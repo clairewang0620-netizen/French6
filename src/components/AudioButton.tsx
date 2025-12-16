@@ -16,6 +16,9 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, className, size 
   const handlePlay = (e: React.MouseEvent) => {
     e.stopPropagation();
     
+    // CRITICAL: Unlock audio engine on direct user interaction
+    audioService.unlock();
+
     if (isPlaying || isLoading) {
       audioService.stop();
       setIsPlaying(false);

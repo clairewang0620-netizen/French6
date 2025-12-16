@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { audioService } from '../services/audioService';
 
 // ==========================================
 // 🔐 配置区域
@@ -87,6 +88,11 @@ export const AccessGuard: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (VALID_ACCESS_CODES.includes(input)) {
       localStorage.setItem(STORAGE_KEY, "granted");
+      
+      // CRITICAL: Unlock audio when user enters the app
+      // This is a trusted user interaction event (submit)
+      audioService.unlock();
+      
       setIsAuthorized(true);
     } else {
       setError("访问码无效，请核对后重试");

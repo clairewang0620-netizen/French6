@@ -1,30 +1,43 @@
 class AudioService {
   private currentAudio: HTMLAudioElement | null = null;
-  
-  // Property required by AudioUnlocker component to track user interaction status
   public isUnlocked: boolean = false;
+  private audioContext: any = null; // Use any to support webkitAudioContext without strict type issues
 
   /**
-   * Unlock mechanism for mobile browsers (iOS/Android).
-   * Plays the sample file silently to warm up the audio context on first user interaction.
+   * GLOBAL AUDIO UNLOCK
+   * Critical for iOS/Android/WeChat compatibility.
+   * Must be called inside a synchronous user interaction event (click/touch).
    */
   public unlock() {
     if (this.isUnlocked) return;
-    
-    // Use the standard sample file for unlocking
-    const audio = new Audio("/audio/fr_sample.mp3");
-    audio.volume = 0;
-    audio.play().then(() => {
+
+    try {
+      // 1. Resume/Create AudioContext (Web Audio API)
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        this.audioContext = new AudioContextClass();
+        this.audioContext.resume().catch((e: any) => console.warn('AudioContext resume failed', e));
+      }
+
+      // 2. Play silent HTML5 Audio (DOM Audio)
+      // Minimal silent MP3 data URI to wake up the audio thread
+      const silentMp3 = 'data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAP/7kGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+      const silentAudio = new Audio(silentMp3);
+      silentAudio.play().then(() => {
+        console.log('[AudioService] Audio unlocked successfully');
+      }).catch((e) => {
+        // Expected if interaction is not valid, but we try anyway
+        console.warn('[AudioService] Silent unlock failed', e);
+      });
+
       this.isUnlocked = true;
-    }).catch(() => {
-      // Silent failure is expected if no interaction has occurred yet
-    });
+    } catch (e) {
+      console.error('[AudioService] Unlock error', e);
+    }
   }
 
   /**
-   * Universal speak method using HTML5 Audio.
-   * This replaces SpeechSynthesis to ensure consistent "French Accent" on iOS 
-   * and reliable playback on Android WebViews (e.g., WeChat).
+   * Unified speak method using HTML5 Audio only.
    */
   public speak(
     text: string, 
@@ -34,21 +47,20 @@ class AudioService {
       onError?: (e: any) => void; 
     }
   ) {
-    // 1. Stop any currently playing audio
+    // 1. Stop previous audio
     this.stop();
 
     // 2. Resource Path
-    // In a full production environment, this should map to dynamic files: `/audio/${text}.mp3`.
-    // For this version, we use a high-quality sample file to guarantee functionality across all platforms.
+    // Using the fixed sample file to ensure sound output on all devices as requested.
     const src = "/audio/fr_sample.mp3";
 
     try {
       const audio = new Audio(src);
       this.currentAudio = audio;
 
-      // 3. Mandatory Attributes for Mobile Compatibility
+      // 3. Mandatory Attributes for Mobile
       audio.preload = "auto";
-      // @ts-ignore: Non-standard property required for some iOS webview contexts
+      // @ts-ignore
       audio.playsInline = true;
 
       // 4. Event Bindings
@@ -58,22 +70,27 @@ class AudioService {
         this.currentAudio = null;
       };
       audio.onerror = (e) => {
-        console.error('[AudioService] Playback error:', e);
+        console.error('[AudioService] Playback error', e);
         callbacks?.onError?.(e);
         this.currentAudio = null;
       };
 
       // 5. Load & Play
       audio.load();
-      audio.play().catch((e) => {
-        // Log warning but don't crash UI. 
-        // This usually happens if the user hasn't interacted with the document yet.
-        console.warn('[AudioService] Autoplay blocked:', e);
-        callbacks?.onError?.(e);
-      });
+      
+      // Reset time to ensure clean start
+      audio.currentTime = 0;
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((e) => {
+          console.warn('[AudioService] Play blocked. Ensure audioService.unlock() was called on user interaction.', e);
+          callbacks?.onError?.(e);
+        });
+      }
 
     } catch (e) {
-      console.error('[AudioService] Setup error:', e);
+      console.error('[AudioService] Setup error', e);
       callbacks?.onError?.(e);
     }
   }
@@ -84,7 +101,7 @@ class AudioService {
         this.currentAudio.pause();
         this.currentAudio.currentTime = 0;
       } catch (e) {
-        // Ignore pause errors
+        // Ignore errors during stop
       }
       this.currentAudio = null;
     }
