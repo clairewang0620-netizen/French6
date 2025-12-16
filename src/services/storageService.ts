@@ -53,6 +53,15 @@ export const storageService = {
     return !existing.includes(wordId); // Returns true if added, false if removed
   },
 
+  // Ensure word is in strengthen list (idempotent)
+  addStrengthenWord: (wordId: string) => {
+    const existing = storageService.getStrengthenedWordIds();
+    if (!existing.includes(wordId)) {
+      const updated = [...existing, wordId];
+      localStorage.setItem(STRENGTHEN_KEY, JSON.stringify(updated));
+    }
+  },
+
   getStrengthenedWordIds: (): string[] => {
     const data = localStorage.getItem(STRENGTHEN_KEY);
     return data ? JSON.parse(data) : [];
@@ -76,6 +85,9 @@ export const storageService = {
       });
     }
     localStorage.setItem(DICTATION_ERR_KEY, JSON.stringify(existing));
+
+    // Automatically add to Strengthen list for Flashcard review
+    storageService.addStrengthenWord(wordId);
   },
 
   getDictationMistakes: (): DictationMistake[] => {

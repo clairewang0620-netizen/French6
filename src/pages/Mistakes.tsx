@@ -3,6 +3,7 @@ import { storageService, DictationMistake } from '../services/storageService';
 import { QUIZ_DATA } from '../data/quiz';
 import { QuizQuestion } from '../types';
 import { Trash2, Brain, Headphones, AlertTriangle } from 'lucide-react';
+import { AudioButton } from '../components/AudioButton';
 import { clsx } from 'clsx';
 
 type Tab = 'quiz' | 'dictation';
@@ -120,9 +121,10 @@ export const Mistakes: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {dictMistakes.map(m => (
-                <div key={m.wordId} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between animate-fade-in">
-                   <div>
+                <div key={m.wordId} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between animate-fade-in group">
+                   <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
+                        <AudioButton text={m.french} size={20} className="text-[#002654] bg-blue-50 hover:bg-blue-100" />
                         <h3 className="font-bold text-xl text-[#002654]">{m.french}</h3>
                         {m.wrongCount > 2 && (
                           <div className="flex items-center gap-1 text-[10px] font-bold bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded">
@@ -130,11 +132,11 @@ export const Mistakes: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500">{m.chinese}</p>
+                      <p className="text-sm text-gray-500 pl-9">{m.chinese}</p>
                    </div>
                    <button 
                       onClick={() => removeDictMistake(m.wordId)}
-                      className="text-gray-300 hover:text-red-500 p-2 transition-colors"
+                      className="text-gray-300 hover:text-red-500 p-2 transition-colors ml-2"
                       title="已掌握，移除"
                     >
                       <Trash2 size={18} />

@@ -3,8 +3,9 @@ import { VOCAB_DATA } from '../data/vocab';
 import { Word } from '../types';
 import { audioService } from '../services/audioService';
 import { storageService } from '../services/storageService';
-import { Headphones, CheckCircle, XCircle, ArrowRight, RefreshCw, Play } from 'lucide-react';
+import { Headphones, CheckCircle, XCircle, ArrowRight, RefreshCw, Play, Book } from 'lucide-react';
 import { clsx } from 'clsx';
+import { Link } from '../components/Layout';
 
 type State = 'idle' | 'playing' | 'result';
 
@@ -72,8 +73,20 @@ export const Dictation: React.FC = () => {
   if (!currentWord) return null;
 
   return (
-    <div className="page-container max-w-2xl mx-auto flex flex-col justify-center min-h-[60vh]">
-      <div className="text-center mb-10">
+    <div className="page-container max-w-2xl mx-auto flex flex-col justify-center min-h-[60vh] relative">
+      
+      {/* Top Controls */}
+      <div className="absolute top-0 right-0 md:top-4 md:right-4">
+        <Link 
+          to="/mistakes" 
+          className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#002654] bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100 transition-all hover:shadow-md"
+        >
+          <Book size={16} />
+          查看错题本
+        </Link>
+      </div>
+
+      <div className="text-center mb-10 mt-8 md:mt-0">
         <h1 className="text-3xl font-bold text-[#002654] flex items-center justify-center gap-3">
           <Headphones size={32} /> 单词听写
         </h1>
