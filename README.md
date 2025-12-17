@@ -10,7 +10,7 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
 - **Grammar**: Essential grammar rules, tenses, and structures.
 - **Dictation**: Listening practice with spelling correction and mistake tracking.
 - **Quiz**: Self-assessment tests to track progress.
-- **Cross-Platform**: Fully optimized for Android (Chrome, WeChat) and iOS Safari, solving common audio compatibility issues.
+- **Audio**: Uses static MP3 files for maximum compatibility across iOS, Android, and WeChat WebViews.
 
 ## Tech Stack
 
@@ -39,10 +39,11 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
 
 ## Audio Configuration
 
-This project uses a standard HTML5 Audio implementation to ensure compatibility across iOS and Android WebViews (including WeChat). 
+This project uses standard HTML5 Audio tags pointing to local MP3 files.
 
 - Audio files are located in `public/audio/`.
-- The core logic is handled in `src/services/audioService.ts`.
+- Logic is handled in `src/services/audioService.ts`.
+- Currently configured to use `fr_sample.mp3` for demonstration purposes.
 
 ## Project Structure
 

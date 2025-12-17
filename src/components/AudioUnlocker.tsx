@@ -1,6 +1,3 @@
-import React from 'react';
-
-// 组件已废弃，直接返回 null
-export const AudioUnlocker: React.FC = () => {
-  return null;
-};
+// This component is deprecated and no longer used.
+// Audio unlocking is handled natively by direct user interaction events.
+export const AudioUnlocker = () => null;
