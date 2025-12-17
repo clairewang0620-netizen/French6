@@ -17,7 +17,7 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
 - **Framework**: React 18
 - **Language**: TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS (via CDN for instant preview)
 - **Icons**: Lucide React
 
 ## Getting Started
@@ -36,14 +36,22 @@ A comprehensive static web app for learning French, featuring vocabulary, gramma
     ```bash
     npm run build
     ```
+    The output will be in the `dist` folder.
+
+## Deployment (GitHub Pages)
+
+This project is configured with `base: './'` in `vite.config.ts`, making it ready for static deployment.
+
+1.  Run `npm run build`.
+2.  Upload the contents of the `dist` folder to your server or the `gh-pages` branch of your repository.
 
 ## Audio Configuration
 
 This project uses standard HTML5 Audio tags pointing to local MP3 files.
 
-- Audio files are located in `public/audio/`.
-- Logic is handled in `src/services/audioService.ts`.
-- Currently configured to use `fr_sample.mp3` for demonstration purposes.
+- **Audio File**: Located at `public/audio/fr_sample.mp3`.
+- **Note**: The current file in the repo is a text placeholder. **You must replace it with a real MP3 file** to hear sound.
+- **Logic**: Handled in `src/services/audioService.ts`.
 
 ## Project Structure
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { READING_DATA } from '../data/reading';
 import { AudioButton } from '../components/AudioButton';
 import { Eye, EyeOff, BookOpen } from 'lucide-react';
+import { Article } from '../types';
 
 export const Reading: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ export const Reading: React.FC = () => {
   );
 };
 
-const ReadingCard = ({ article, index }: { article: any, index: number }) => {
+const ReadingCard: React.FC<{ article: Article; index: number }> = ({ article, index }) => {
   const [showTrans, setShowTrans] = useState(false);
 
   return (
@@ -54,7 +55,7 @@ const ReadingCard = ({ article, index }: { article: any, index: number }) => {
                 <BookOpen size={16}/> 核心词汇
             </h4>
             <div className="flex flex-wrap gap-3">
-                {article.keywords.map((k: any, i: number) => (
+                {article.keywords.map((k, i) => (
                     <div key={i} className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 text-sm">
                         <span className="font-semibold text-[#002654]">{k.fr}</span>
                         <span className="text-gray-400 text-xs">|</span>
