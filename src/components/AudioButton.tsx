@@ -12,11 +12,11 @@ interface AudioButtonProps {
 export const AudioButton: React.FC<AudioButtonProps> = ({ text, className, size = 20 }) => {
   
   const handlePlay = (e: React.MouseEvent) => {
-    // 核心：不要在任何 setTimeout 或 Promise 之后调用 play()
-    // 必须直接在 onClick 响应函数的第一级调用
+    // 阻止冒泡和默认行为
     e.preventDefault();
     e.stopPropagation();
     
+    // 核心：在用户点击的同步执行流中立即调用
     audioService.play(text);
   };
 
@@ -24,10 +24,11 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, className, size 
     <button 
       onClick={handlePlay}
       className={clsx(
-        "p-2 rounded-full transition-all flex items-center justify-center active:scale-95 touch-manipulation hover:bg-black/5",
+        "p-2 rounded-full transition-all flex items-center justify-center active:scale-90 touch-manipulation hover:bg-black/5",
         className
       )}
-      title="播放发音"
+      type="button"
+      aria-label="播放法语发音"
     >
       <Volume2 size={size} />
     </button>
