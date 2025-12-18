@@ -1,87 +1,69 @@
 // ----------------------------------------------------------------------
-// 🔊 Audio Service (Static MP3 Implementation)
+// 🔊 最终音频引擎 (Absolute Path Injection)
 // ----------------------------------------------------------------------
-// 专为移动端 (iOS/Android/WeChat) 优化的原生播放方案
-// ----------------------------------------------------------------------
-
-let currentAudio: HTMLAudioElement | null = null;
 
 /**
- * 核心播放函数 (Singleton Pattern)
- * @param filename 不带后缀的文件名
+ * 核心播放函数：强制使用绝对根路径引用，防止 SPA 路由导致的路径偏移
  */
-function playFrenchAudio(filename: string) {
-  try {
-    // 1. 停止当前音频，防止重叠
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
+export function playAudioByPath(path: string) {
+  // 确保路径以 / 开头，例如 /audio/test.mp3
+  const absolutePath = path.startsWith('/') ? path : `/${path}`;
+  
+  console.log(`[Audio Engine] 正在请求: ${absolutePath}`);
+  
+  const audio = document.createElement('audio');
+  audio.src = absolutePath;
+  audio.autoplay = true;
+  audio.style.display = 'none';
+
+  audio.onended = () => {
+    if (document.body.contains(audio)) {
+      document.body.removeChild(audio);
     }
+  };
 
-    // 2. 构造路径 (相对路径，适配 base: './')
-    const src = `audio/fr/${filename}.mp3`;
-    const audio = new Audio(src);
-    
-    // 3. 配置
-    audio.preload = 'auto';
-    // audio.crossOrigin = 'anonymous'; // 如有跨域需求可开启
+  audio.onerror = () => {
+    console.error(`[Audio Error 404] 无法在域名根目录下找到文件: ${absolutePath}`);
+    if (document.body.contains(audio)) {
+      document.body.removeChild(audio);
+    }
+  };
 
-    // 4. 事件监听 (遵循 iOS/Android 交互策略)
-    audio.oncanplaythrough = () => {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          // 常见错误：用户未交互导致自动播放被拦截
-          console.error('[Audio] Playback interrupted:', error);
-        });
-      }
-    };
-
-    audio.onerror = (e) => {
-      console.warn(`[Audio 404] 无法加载音频: ${src}`);
-      console.warn(`[Hint] 请确保 public/audio/fr/ 目录下存在名为 "${filename}.mp3" 的文件`);
-    };
-
-    // 5. 更新当前实例
-    currentAudio = audio;
-
-    // 6. 尝试立即加载 (部分浏览器需要)
-    audio.load();
-
-  } catch (err) {
-    console.error('[Audio Exception]', err);
-  }
+  document.body.appendChild(audio);
+  audio.play().catch(err => {
+    console.warn('[Audio] 自动播放拦截:', err.name);
+  });
 }
+
+/**
+ * 文件名转换逻辑
+ */
+const slugify = (text: string): string => {
+  return text
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
 
 export const audioService = {
   /**
-   * 播放文本对应的音频
-   * @param text 法语原文 (例如: "Bonjour, ça va ?")
+   * 业务播放接口：强制指向 /audio/ 扁平目录
    */
   play: (text: string) => {
     if (!text) return;
+    const filename = slugify(text);
+    // 强制绝对路径 /audio/xxx.mp3
+    const path = `/audio/${filename}.mp3`;
+    playAudioByPath(path);
+  },
 
-    // -------------------------------------------------------
-    // 文件名标准化逻辑 (Slugify)
-    // -------------------------------------------------------
-    // 规则：
-    // 1. 去除重音 (é -> e, à -> a)
-    // 2. 转小写
-    // 3. 移除撇号 (c'est -> cest)
-    // 4. 替换非字母数字字符为下划线
-    // 5. 去除首尾下划线
-    // -------------------------------------------------------
-    const filename = text
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
-      .toLowerCase()
-      .trim()
-      .replace(/['’]/g, '')        // Remove apostrophes
-      .replace(/[^a-z0-9]+/g, '_') // Replace symbols with _
-      .replace(/^_+|_+$/g, '');    // Trim _
-
-    if (filename) {
-      // console.log(`[Audio Debug] "${text}" -> "${filename}.mp3"`);
-      playFrenchAudio(filename);
-    }
+  /**
+   * 紧急测试入口
+   */
+  test: () => {
+    playAudioByPath('/audio/test.mp3');
   }
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from '../components/Layout';
-import { BookOpen, Mic, Book, PenTool, Brain, ArrowRight, Sparkles, Headphones } from 'lucide-react';
+import { BookOpen, Mic, Book, PenTool, Brain, ArrowRight, Sparkles, Headphones, AlertTriangle } from 'lucide-react';
+import { audioService } from '../services/audioService';
 import { clsx } from 'clsx';
 
 interface ModuleCardProps {
@@ -31,22 +32,17 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ title, sub, icon: Icon, to, the
         s.hoverBorder
       )}
     >
-      {/* Top Color Bar - using rounded-t to avoid overflow-hidden clipping issues on some mobile browsers */}
       <div className={clsx("h-1.5 w-full rounded-t-2xl", s.bar)}></div>
-      
       <div className="p-6 flex-1 flex flex-col items-start">
         <div className={clsx("p-4 rounded-2xl mb-4 transition-colors group-hover:scale-110 duration-300", s.iconBg, s.iconText)}>
           <Icon size={32} strokeWidth={2} />
         </div>
-        
         <h3 className="text-xl md:text-2xl font-bold text-[#1A202C] mb-2 group-hover:text-[#002654] transition-colors">
           {title}
         </h3>
-        
         <p className="text-gray-500 text-sm leading-relaxed mb-6">
           {sub}
         </p>
-        
         <div className={clsx(
           "mt-auto flex items-center text-sm font-bold bg-gray-50 px-4 py-2 rounded-full transition-all group-hover:bg-[#002654] group-hover:text-white",
           s.iconText
@@ -62,10 +58,24 @@ export const Home: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center flex-1 w-full py-8 md:py-12">
       
+      {/* Emergency Audio Test (临时) */}
+      <div className="mb-8 w-full max-w-lg px-4">
+        <button 
+          onClick={() => audioService.test()}
+          className="w-full flex items-center justify-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all active:scale-95"
+        >
+          <AlertTriangle size={24} />
+          🔊 最终音频存活测试 (TEST.MP3)
+        </button>
+        <p className="text-center text-[10px] text-gray-400 mt-2">
+          如果此按钮点击无声，控制台报错 404，请确认您的 GitHub 仓库中根目录下存在 public/audio/test.mp3
+        </p>
+      </div>
+
       {/* Hero Section */}
       <div className="text-center space-y-4 mb-12 animate-fade-in max-w-2xl mx-auto px-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-[#002654] text-xs font-bold uppercase tracking-wider mb-2">
-          <Sparkles size={12} /> v2.0 全新升级
+          <Sparkles size={12} /> v2.1 路径紧急修复版
         </div>
         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#002654] drop-shadow-sm">
           French Master
@@ -77,64 +87,16 @@ export const Home: React.FC = () => {
 
       {/* Modules Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full animate-slide-up px-2 md:px-0 max-w-6xl">
-        {/* 1. Core Vocabulary */}
-        <ModuleCard 
-          title="核心单词" 
-          sub="从 A1 到 C1 的分级词汇库，配备专业发音与智能卡片记忆系统。" 
-          icon={BookOpen} 
-          to="/vocab" 
-          theme="blue"
-        />
-        
-        {/* 2. Speaking */}
-        <ModuleCard 
-          title="日常口语" 
-          sub="精选 200+ 句高频生活表达，覆盖旅行、社交、购物等真实场景。" 
-          icon={Mic} 
-          to="/speaking" 
-          theme="red"
-        />
-        
-        {/* 3. Reading */}
-        <ModuleCard 
-          title="精选阅读" 
-          sub="15 篇短文沉浸式阅读，提供关键词解析与全文朗读功能。" 
-          icon={Book} 
-          to="/reading" 
-          theme="green"
-        />
-        
-        {/* 4. Grammar */}
-        <ModuleCard 
-          title="基础语法" 
-          sub="系统化梳理关键语法点，从时态变位到复杂句式结构全解析。" 
-          icon={PenTool} 
-          to="/grammar" 
-          theme="purple"
-        />
-
-        {/* 5. Dictation (New) */}
-        <ModuleCard 
-          title="单词听写" 
-          sub="磨耳朵神器。听音拼写，智能纠错，自动收录错题，强化拼写记忆。" 
-          icon={Headphones} 
-          to="/dictation" 
-          theme="cyan"
-        />
-        
-        {/* 6. Test */}
-        <ModuleCard 
-          title="阶段测试" 
-          sub="全等级自测题库，智能记录错题，助你查漏补缺，巩固所学。" 
-          icon={Brain} 
-          to="/quiz" 
-          theme="orange"
-        />
+        <ModuleCard title="核心单词" sub="A1-C1分级词汇，配备 IPA 与发音。" icon={BookOpen} to="/vocab" theme="blue" />
+        <ModuleCard title="日常口语" sub="200+ 句高频表达，真实场景模拟。" icon={Mic} to="/speaking" theme="red" />
+        <ModuleCard title="精选阅读" sub="15 篇短文，关键词深度解析。" icon={Book} to="/reading" theme="green" />
+        <ModuleCard title="基础语法" sub="系统梳理核心规则与时态变位。" icon={PenTool} to="/grammar" theme="purple" />
+        <ModuleCard title="单词听写" sub="磨耳朵神器，强化拼写记忆。" icon={Headphones} to="/dictation" theme="cyan" />
+        <ModuleCard title="阶段测试" sub="全等级自测题库，智能巩固进步。" icon={Brain} to="/quiz" theme="orange" />
       </div>
 
-      {/* Footer Info */}
       <footer className="mt-16 text-center text-gray-400 text-xs">
-        <p>© French Master. Designed for Learners.</p>
+        <p>© French Master. Restore Audio Mode Active.</p>
       </footer>
     </div>
   );
