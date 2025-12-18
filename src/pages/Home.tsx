@@ -58,24 +58,27 @@ export const Home: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center flex-1 w-full py-8 md:py-12">
       
-      {/* Emergency Audio Test (临时) */}
+      {/* Emergency Audio Test */}
       <div className="mb-8 w-full max-w-lg px-4">
         <button 
-          onClick={() => audioService.test()}
+          onClick={() => {
+            audioService.unlock(); // 手动触发解锁
+            audioService.test();   // 测试播放
+          }}
           className="w-full flex items-center justify-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
           🔊 最终音频存活测试 (TEST.MP3)
         </button>
         <p className="text-center text-[10px] text-gray-400 mt-2">
-          如果此按钮点击无声，控制台报错 404，请确认您的 GitHub 仓库中根目录下存在 public/audio/test.mp3
+          点击测试。若无声，系统将自动尝试浏览器 TTS 法语发音。
         </p>
       </div>
 
       {/* Hero Section */}
       <div className="text-center space-y-4 mb-12 animate-fade-in max-w-2xl mx-auto px-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-[#002654] text-xs font-bold uppercase tracking-wider mb-2">
-          <Sparkles size={12} /> v2.1 路径紧急修复版
+          <Sparkles size={12} /> v2.2 移动端音频优化版
         </div>
         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#002654] drop-shadow-sm">
           French Master
@@ -96,7 +99,7 @@ export const Home: React.FC = () => {
       </div>
 
       <footer className="mt-16 text-center text-gray-400 text-xs">
-        <p>© French Master. Restore Audio Mode Active.</p>
+        <p>© French Master. Universal Audio Mode Active.</p>
       </footer>
     </div>
   );
