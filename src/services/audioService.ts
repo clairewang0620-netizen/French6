@@ -1,9 +1,35 @@
 // ----------------------------------------------------------------------
-// 📱 移动端（iOS/Android）终极兼容版音频引擎
+// 📱 移动端（iOS/Android）终极兼容版音频引擎 V3
 // ----------------------------------------------------------------------
 
 let _audioInstance: HTMLAudioElement | null = null;
 let _isUnlocked = false;
+let _frenchVoice: SpeechSynthesisVoice | null = null;
+
+/**
+ * 获取系统中的法语语音包（解决 iOS 发出英语声音的关键）
+ */
+function getFrenchVoice(): SpeechSynthesisVoice | null {
+  if (_frenchVoice) return _frenchVoice;
+  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+
+  const voices = window.speechSynthesis.getVoices();
+  // 优先级：fr-FR (法国) > fr-CA (加拿大) > 任何包含 fr 的
+  _frenchVoice = 
+    voices.find(v => v.lang === 'fr-FR' && v.localService) ||
+    voices.find(v => v.lang === 'fr-FR') ||
+    voices.find(v => v.lang.includes('fr')) ||
+    null;
+  
+  return _frenchVoice;
+}
+
+// 某些浏览器 getVoices() 是异步加载的，需要监听变化
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = getFrenchVoice;
+  }
+}
 
 /**
  * 获取或创建全局单例 Audio 对象
@@ -19,30 +45,34 @@ function getAudioInstance() {
 }
 
 /**
- * 核心：浏览器原生 TTS 发音（法语）
+ * 核心：浏览器原生 TTS 发音
  */
 function speakTTS(text: string) {
   if (!window.speechSynthesis) return;
 
-  // iOS 必须先 cancel，否则可能导致整个 TTS 队列永久阻塞
+  // 1. 停止之前的播放
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'fr-FR';
-  utterance.rate = 0.9;
-  utterance.pitch = 1.0;
-
-  console.log(`[Audio Engine] 系统 TTS 发音: "${text}"`);
   
-  // 延迟一小会儿执行，防止与上一个音频结束冲突
-  setTimeout(() => {
-    window.speechSynthesis.speak(utterance);
-  }, 50);
+  // 2. 强制指定语言和语音包（防止 iOS 默认播英语）
+  utterance.lang = 'fr-FR';
+  const voice = getFrenchVoice();
+  if (voice) {
+    utterance.voice = voice;
+    console.log(`[Audio Engine] 使用特定语音包: ${voice.name}`);
+  } else {
+    console.warn(`[Audio Engine] 未找到特定法语语音包，使用默认 fr-FR 设置`);
+  }
+
+  utterance.rate = 0.85; // 稍慢一点点，法语更清晰
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+
+  // 3. 播放
+  window.speechSynthesis.speak(utterance);
 }
 
-/**
- * 路径转换函数
- */
 const slugify = (text: string): string => {
   return text
     .normalize("NFD")
@@ -56,22 +86,23 @@ const slugify = (text: string): string => {
 
 export const audioService = {
   /**
-   * 解锁音频上下文 (必须由用户手势事件直接触发)
-   * 建议在 AccessGuard 的“验证进入”按钮或页面首次点击时调用
+   * 解锁音频上下文
    */
   unlock: () => {
     if (_isUnlocked) return;
     
-    // 1. 解锁 HTML5 Audio
+    // 移动端必须在点击事件中立即触发一次 play
     const audio = getAudioInstance();
-    const silentBlob = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==";
-    audio.src = silentBlob;
-    audio.play().then(() => {
-      _isUnlocked = true;
-      console.log("[Audio Engine] 移动端 Audio 上下文已解锁");
-    }).catch(e => console.warn("[Audio Engine] Audio 解锁失败:", e));
+    audio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==";
+    const p = audio.play();
+    if (p) {
+      p.then(() => {
+        _isUnlocked = true;
+        console.log("[Audio Engine] 移动端上下文已解锁");
+      }).catch(() => {});
+    }
 
-    // 2. 解锁 TTS (iOS 有时需要通过一个空的 speak 来解锁)
+    // 预热 TTS
     if (window.speechSynthesis) {
       const u = new SpeechSynthesisUtterance("");
       u.volume = 0;
@@ -85,38 +116,41 @@ export const audioService = {
   play: (text: string) => {
     if (!text) return;
 
-    // 每次播放都尝试解锁（以防万一）
+    // 1. 确保在用户交互栈中调用解锁
     audioService.unlock();
 
+    // 2. 立即尝试 TTS（作为同步备选，防止异步拦截）
+    // 注意：在某些极其严格的移动设备上，异步获取 MP3 失败后再调 TTS 会被拦截
+    // 所以我们需要一个更稳健的策略
+    
     const filename = slugify(text);
     const path = `/audio/${filename}.mp3`;
     const audio = getAudioInstance();
 
     console.log(`[Audio Engine] 尝试播放 MP3: ${path}`);
 
-    // 清除之前的监听器，防止回调堆积
+    // 清除旧状态
     audio.onended = null;
     audio.onerror = null;
 
-    // 如果播放 MP3 失败（404 或 拦截），则降级到 TTS
-    const handleFallback = () => {
-      console.warn(`[Audio Engine] MP3 无法播放，正在降级到系统 TTS: "${text}"`);
+    // 如果 MP3 报错（404 等），切换到 TTS
+    audio.onerror = () => {
+      console.warn(`[Audio Engine] MP3 资源失效，降级到 TTS`);
       speakTTS(text);
     };
 
-    audio.onerror = handleFallback;
-
-    // 执行播放
     audio.src = path;
-    audio.play().catch(error => {
-      console.error("[Audio Engine] 播放 Promise 被拦截:", error.name);
-      handleFallback();
-    });
+    const playPromise = audio.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        // 如果 MP3 因为路径、网络或交互限制被拦截，直接改用 TTS
+        console.error("[Audio Engine] MP3 播放失败，立即执行 TTS 补偿");
+        speakTTS(text);
+      });
+    }
   },
 
-  /**
-   * 测试音频
-   */
   test: () => {
     audioService.play("Bonjour");
   }
