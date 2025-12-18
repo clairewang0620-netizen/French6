@@ -5,15 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>French Master App</title>
-    <!-- Tailwind CSS CDN for instant styling in preview/static environments -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              primary: '#0055A4', // French Blue
-              secondary: '#EF4135', // French Red
+              primary: '#0055A4',
+              secondary: '#EF4135',
               accent: '#F5F5F5',
               surface: '#FFFFFF'
             },
@@ -26,6 +25,8 @@
     </script>
     <style>
       body { -webkit-tap-highlight-color: transparent; }
+      .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
   <script type="importmap">
 {
@@ -44,6 +45,7 @@
 </head>
   <body class="bg-gray-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>
+    <!-- 修正：Vite 项目在 index.html 引用入口通常不带 /src 前缀或根据根目录调整 -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
